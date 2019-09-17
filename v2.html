@@ -1,0 +1,380 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v2 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html" class="active">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#instruction-level-parallelism-ilp" id="instruction-level-parallelism-ilp">Instruction level parallelism (ILP)</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v2_instr_level_parallelism/src/lib.rs">Full source</a></p>
+<p>Our program does not take advantage of the fact that modern CPUs are <a href="https://en.wikipedia.org/wiki/Superscalar_processor">superscalar processors</a>, capable of executing several independent instructions simultaneously.
+The problem in our <a href="v1.html"><code>v1</code></a> implementation is that each step is dependent on the previous step, caused by this part:</p>
+<pre><code class="language-rust no_run noplaypen">    let z = x + y;
+    v = min(v, z);
+</code></pre>
+<p>We will solve this by using a simple idea from the <a href="http://ppc.cs.aalto.fi/ch2/v2/">reference solution</a>: accumulate results into 4 independent, intermediate results and merge them only after processing the whole row.</p>
+<p>Suppose we have some row of <code>d</code>, containing the elements <code>x0, x1, x2, x3, ..., xn</code>, and some column of <code>d</code> (i.e. row of <code>t</code>), containing the elements <code>y0, y1, y2, y3, ..., yn</code>.
+Then, we compute results for all rows by accumulating intermediate results into 4 variables <code>v0, v1, v2, v3</code> as follows:</p>
+<pre><code class="language-rust no_run noplaypen">    // iteration 1
+    v0 = min(v0, x0 + y0);
+    v1 = min(v1, x1 + y1);
+    v2 = min(v2, x2 + y2);
+    v3 = min(v3, x3 + y3);
+    // iteration 2
+    v0 = min(v0, x4 + y4);
+    v1 = min(v1, x5 + y5);
+    v2 = min(v2, x6 + y6);
+    v3 = min(v3, x7 + y7);
+    // iteration 3
+    v0 = min(v0, x8 + y8);
+    v1 = min(v1, x9 + y9);
+    v2 = min(v2, x10 + y10);
+    v3 = min(v3, x11 + y11);
+    // etc ...
+</code></pre>
+<p>This should allow the CPU to write results into 4 independent registers for each intermediate result.</p>
+<p>Before we can update the <code>step_row</code> function, we need to make sure the amount of elements on each row is always a multiple of 4 to keep the performance-critical loop free of messy, unnecessary branching.
+As previously, we transpose <code>d</code> to allow linear reading of its columns, but have to make sure the row length of the transpose is also divisible by 4.
+The preprocessing looks a bit more complicated, but is essentially the same as doing the transpose in <a href="v1.html"><code>v1</code></a>, except that we copy the values of <code>d</code> also into <code>vd</code>, which is padded with <code>std::f32::INFINITY</code> values to make its rows divisible by 4:</p>
+<pre><code class="language-rust no_run noplaypen">    const BLOCK_SIZE: usize = 4;
+    let blocks_per_row = (n + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    let n_padded = blocks_per_row * BLOCK_SIZE;
+    // d and transpose of d with extra room at the end of each row,
+    // both initially filled with f32::INFINITY
+    let mut vd = std::vec![std::f32::INFINITY; n_padded * n];
+    let mut vt = std::vec![std::f32::INFINITY; n_padded * n];
+    // Function: for one row of vd and vt,
+    // copy a row at 'i' of d into vd and column at 'i' of d into vt
+    let preprocess_row = |(i, (vd_row, vt_row)): (usize, (&amp;mut [f32], &amp;mut [f32]))| {
+        for (j, (x, y)) in vd_row.iter_mut().zip(vt_row.iter_mut()).enumerate() {
+            if i &lt; n &amp;&amp; j &lt; n {
+                *x = d[n*i + j];
+                *y = d[n*j + i];
+            }
+        }
+    };
+    // Partition vd and vt into rows, apply preprocessing in parallel for each row pair
+    vd.par_chunks_mut(n_padded)
+        .zip(vt.par_chunks_mut(n_padded))
+        .enumerate()
+        .for_each(preprocess_row);
+</code></pre>
+<p>Now <code>vd</code> contains the original <code>d</code> and <code>vt</code> contains the transpose of <code>d</code>, but both have been padded with extra columns to the right containing <code>f32::INFINITY</code>s to ensure the width of <code>vd</code> and <code>vt</code> is always divisible by 4.
+Then, we partition <code>r</code> and <code>vd</code> into row chunks, zip them into row chunk pairs and apply <code>step_row</code> in parallel for each row of <code>vd</code>, writing the results into its paired result row chunk.
+Each thread will compute results over all rows of <code>vt</code>.</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row in vd (vd_row) and all rows in vt (vt_rows),
+    // compute all results for a row in r (r_row), corresponding to the row index of vd_row.
+    let step_row = |(r_row, vd_row): (&amp;mut [f32], &amp;[f32])| {
+        let vt_rows = vt.chunks_exact(n_padded);
+        // Length of a zipped iterator is the length of the shorter iterator in the zip pair so this never exceeds n
+        for (res, vt_row) in r_row.iter_mut().zip(vt_rows) {
+            // Partition both rows into chunks of size 4
+            // (x0, x1, x2, x3), (x4, x5, x6, x7), ...
+            let vd_blocks = vd_row.chunks_exact(BLOCK_SIZE);
+            // (y0, y1, y2, y3), (y4, y5, y6, y7), ...
+            let vt_blocks = vt_row.chunks_exact(BLOCK_SIZE);
+            // Using an array here is bit more convenient than 4 different variables, e.g. v0, v1, v2, v3
+            let mut block = [std::f32::INFINITY; BLOCK_SIZE];
+            // Accumulate all results as in v1, but 4 elements at a time
+            for (vd_block, vt_block) in vd_blocks.zip(vt_blocks) {
+                for (b, (&amp;x, &amp;y)) in block.iter_mut().zip(vd_block.iter().zip(vt_block)) {
+                    *b = min(*b, x + y);
+                }
+            }
+            // Fold 4 intermediate values into a single minimum and assign to final result
+            *res = block.iter().fold(std::f32::INFINITY, |acc, &amp;x| min(acc, x));
+        }
+    };
+    r.par_chunks_mut(n)
+        .zip(vd.par_chunks(n_padded))
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>We'll now compare the Rust implementation to the reference <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v2_instr_level_parallelism/step.cpp">C++ version</a>, which will be compiled with both Clang and GCC.
+If we run the benchmark program for a single iteration with the same parameters as previously, we get:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v2</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">20.8</td><td align="left">2.88</td></tr>
+<tr><td align="left">C++ <code>v2</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">44.6</td><td align="left">3.23</td></tr>
+<tr><td align="left">Rust <code>v2</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">17.0</td><td align="left">2.43</td></tr>
+</tbody></table>
+<p>Two interesting questions arise:</p>
+<ul>
+<li>Why is <code>rustc</code> outperforming <code>gcc</code>?</li>
+<li>What on earth is <code>clang</code> doing?</li>
+</ul>
+<p>Let's compare the disassembly of all 3 versions.</p>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<p>I omitted a portion of code above <code>LOOP</code>, up until label <code>1f0</code> since <a href="https://linux.die.net/man/1/perf-record"><code>perf-record</code></a> placed most CPU cycles between <code>LOOP</code> and the <code>jb</code> instruction that jumps to <code>LOOP</code>.</p>
+<p>It looks like the compiler outsmarted us by ignoring our attempt of writing code that utilizes ILP and instead auto-vectorized our loop, which now does all the work with two 128-bit SIMD registers:</p>
+<pre><code class="language-x86asm">LOOP:
+    mov       rbp,r14
+    add       rbp,rbx
+    je        1f0 ; about 20 lines above LOOP
+    inc       rcx
+    vmovups   xmm3,XMMWORD PTR [r14+rbx*1]
+    vaddps    xmm3,xmm3,XMMWORD PTR [r10+rbx*1]
+    vpermilps xmm3,xmm3,0x1b
+    vminps    xmm2,xmm2,xmm3
+    add       rbx,0x10
+    cmp       rcx,rax
+    jb        LOOP
+
+</code></pre>
+<p>We'll be rewriting most of our code with 256-bit vector types and instructions in <a href="v3.html"><code>v3</code></a>, but let's take a look at what the compiler managed to generate here.</p>
+<p>We load 4 consecutive <code>f32</code> values from <code>vd_row</code> into a 128-bit vector register <code>xmm3</code>:</p>
+<pre><code class="language-x86asm">    vmovups   xmm3,XMMWORD PTR [r14+rbx*1]
+</code></pre>
+<p>Then we load 4 consecutive <code>f32</code> values from <code>vt_row</code>, add those to the 4 values in <code>xmm3</code> using a single SIMD add-instruction, and store the result in <code>xmm3</code>:</p>
+<pre><code class="language-x86asm">    vaddps    xmm3,xmm3,XMMWORD PTR [r10+rbx*1]
+</code></pre>
+<p>Using <code>vpermilps</code> with shuffle control <code>0x1b = 0b00_01_10_11</code> will reverse the order of 4 elements in <code>xmm3</code>, but I don't know why the compiler wants to use this here, especially inside the loop.
+However, we are going to use these kind of SIMD register permutations ourselves later in <a href="v5.html"><code>v5</code></a> to significantly lower the total amount of memory accesses.</p>
+<pre><code class="language-x86asm">    vpermilps xmm3,xmm3,0x1b
+</code></pre>
+<p>We use a single SIMD min-instruction for 4 <code>f32</code> result values in <code>xmm2</code> and 4 sums in <code>xmm3</code> we got from the previous step and store the result in <code>xmm2</code>:</p>
+<pre><code class="language-x86asm">    vminps    xmm2,xmm2,xmm3
+</code></pre>
+<p>We increment the loop variable by 16, which will jump over 4 <code>f32</code>s in the next loop, and start over:</p>
+<pre><code class="language-x86asm">    add       rbx,0x10
+    cmp       rcx,rax
+    jb        LOOP
+</code></pre>
+<h3><a class="header" href="#clang" id="clang"><code>clang</code></a></h3>
+<p>I did not try to figure out what happens here, but it looks like a failed auto-vectorization attempt:</p>
+<pre><code class="language-x86asm">LOOP:
+    ; other half with similar lines omitted
+    lea       edx,[rax+r14*1+0x2]
+    movsxd    rdx,edx
+    lea       esi,[r15+r14*1+0x2]
+    movsxd    rsi,esi
+    lea       edi,[rax+r14*1+0x3]
+    movsxd    rdi,edi
+    lea       ebx,[r15+r14*1+0x3]
+    movsxd    rbx,ebx
+    vmovss    xmm0,DWORD PTR [r8+rdi*4]
+    vinsertps xmm0,xmm0,DWORD PTR [r8+rdx*4],0x10
+    vmovss    xmm3,DWORD PTR [rbp+rbx*4+0x0]
+    vinsertps xmm3,xmm3,DWORD PTR [rbp+rsi*4+0x0],0x10
+    vaddps    xmm0,xmm0,xmm3
+    vpmovzxdq xmm3,xmm0
+    vcmpltps  xmm0,xmm0,xmm4
+    vunpcklps xmm0,xmm2,xmm0
+    vblendvpd xmm6,xmm6,xmm3,xmm0
+    vpermilps xmm7,xmm5,0xe8
+    vpermilps xmm4,xmm6,0xe8
+    add       r14d,0x4
+    add       rcx,0xffffffffffffffff
+    jne       LOOP
+
+</code></pre>
+<h3><a class="header" href="#gcc" id="gcc"><code>gcc</code></a></h3>
+<p>GCC did not auto-vectorize anything but produced a good example of ILP:</p>
+<pre><code class="language-x86asm">LOOP:
+    lea    rcx,[r10+rcx*4]
+    lea    r8,[r8+r9*1+0x10]
+    nop    WORD PTR cs:[rax+rax*1+0x0]
+    vmovss xmm0,DWORD PTR [rcx]
+    vaddss xmm0,xmm0,DWORD PTR [rax]
+    add    rax,0x10
+    add    rcx,0x10
+    vminss xmm1,xmm0,xmm1
+    vmovss xmm0,DWORD PTR [rcx-0xc]
+    vaddss xmm0,xmm0,DWORD PTR [rax-0xc]
+    vminss xmm4,xmm0,xmm4
+    vmovss xmm0,DWORD PTR [rcx-0x8]
+    vaddss xmm0,xmm0,DWORD PTR [rax-0x8]
+    vminss xmm3,xmm0,xmm3
+    vmovss xmm0,DWORD PTR [rcx-0x4]
+    vaddss xmm0,xmm0,DWORD PTR [rax-0x4]
+    vminss xmm2,xmm0,xmm2
+    cmp    r8,rax
+    jne    LOOP
+
+</code></pre>
+<p>This is what we were trying to achieve, to have 4 independent registers for updating the minimums.
+You can read more about it <a href="http://ppc.cs.aalto.fi/ch2/v2asm">here</a>.</p>
+<p>We are not going to twist our Rust code so we can get a good ILP example out of it, the auto-vectorization already produced code that was more efficient than the <code>gcc</code> ILP example above.
+However, this was just an example, and we'll be needing ILP extensively later in <a href="v4.html"><code>v4</code></a>.
+First, let's rewrite our code using SIMD instructions.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="v1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="v1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

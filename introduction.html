@@ -1,0 +1,233 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Introduction - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html" class="active">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<p>In this tutorial, we will implement a Rust program that attempts to utilize 100% of the theoretical capacity of three relatively modern, mid-range CPUs.
+We'll use an existing, highly efficient <a href="http://ppc.cs.aalto.fi/ch2/">C++ implementation</a> as a reference point to compare how our Rust program is doing.
+We start with a simple baseline solution of 3 nested <code>for</code>-loops, and keep improving on the baseline solution incrementally, implementing 8 versions in total, until the program is going so fast it can hardly go faster.
+We'll approach the problem from the point of view of a C++ programmer who already knows how the reference implementation solves the problem, but is interested in an approach using the Rust language.</p>
+<p>Writing a program that pushes the CPU to its limits requires some understanding of the underlying hardware, which occasionally means reading the output of a compiler and using low-level intrinsics.
+I encourage you to also study the <a href="http://ppc.cs.aalto.fi/ch2/">reference implementation</a> materials, or at least keep them close by as we will be referencing to those materials quite often.
+The reference materials explain many important concepts very clearly, with intuitive visualizations that show why each incremental improvement makes the hardware execute the program faster.</p>
+<p>Note that most of the optimization tricks shown in this tutorial are merely Rust-adaptations of the original C++ solutions.
+Interestingly, this does not require as much <code>unsafe</code>-blocks as one would initially assume.
+As we will see in this tutorial, safe Rust can be just as fast as a highly optimized C++ program.</p>
+<h2><a class="header" href="#the-program" id="the-program">The program</a></h2>
+<p>The program we will implement and improve on, is an Θ(n³) algorithm for a graph problem, which is described in more detail <a href="http://ppc.cs.aalto.fi/ch2/">here</a> as the &quot;shortcut problem&quot;.
+All input will consist of square matrices containing <code>n</code> rows and columns of single precision floating point numbers.
+The reference implementations are all defined in functions called <code>step</code> and provide one baseline implementation with 7 incrementally improved versions of <code>step</code>.
+We will implement 8 different <code>step</code> functions in Rust, each aiming to reach the performance of its corresponding C++ implementation.</p>
+<p>It is important to note that we assume the algorithm we are using is the best available algorithm for this task.
+The algorithm will stay the same in <em>all</em> implementations, even though we will be heavily optimizing those implementations.
+In other words, the asymptotic time complexity will always remain at Θ(n³), but we will be doing everything we can to reduce the constant factors that affect the running time.</p>
+<h2><a class="header" href="#incremental-improvements" id="incremental-improvements">Incremental improvements</a></h2>
+<p>Here is a brief summary of all 8 versions of the <code>step</code> function that we will be implementing.
+All implementations will be compiled as static libraries that provide a function called <code>step</code>, with C-language linkage.
+Those static libraries will be linked to the <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/main/main.cpp">benchmarking program</a> that generates the data consisting of random floats and calls <code>step</code> with the generated data, while recording the amount of time spent executing the function.</p>
+<table><thead><tr><th align="left">Library</th><th align="center">Original</th><th align="center">C++</th><th align="center">Rust</th></tr></thead><tbody>
+<tr><td align="left"><code>v0_baseline</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v0/">v0</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v0_baseline/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v0_baseline/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v1_linear_reading</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v1/">v1</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v1_linear_reading/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v1_linear_reading/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v2_instr_level_parallelism</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v2/">v2</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v2_instr_level_parallelism/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v2_instr_level_parallelism/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v3_simd</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v3/">v3</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v3_simd/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v3_simd/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v4_register_reuse</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v4/">v4</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v4_register_reuse/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v4_register_reuse/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v5_more_register_reuse</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v5/">v5</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v5_more_register_reuse/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v5_more_register_reuse/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v6_prefetch</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v6/">v6</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v6_prefetch/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v6_prefetch/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v7_cache_reuse</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v7/">v7</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v7_cache_reuse/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v7_cache_reuse/src/lib.rs">.rs</a></td></tr>
+</tbody></table>
+<h3><a class="header" href="#v0-baseline" id="v0-baseline">v0: Baseline</a></h3>
+<p>Simple solution with 3 nested for loops.</p>
+<h3><a class="header" href="#v1-linear-reading" id="v1-linear-reading">v1: Linear reading</a></h3>
+<p>Copy the input matrix and store its transpose in <a href="https://en.wikipedia.org/wiki/Row-_and_column-major_order">row-major order</a>, enabling a linear memory access pattern also for the columns of the input matrix.</p>
+<h3><a class="header" href="#v2-instruction-level-parallelism" id="v2-instruction-level-parallelism">v2: Instruction level parallelism</a></h3>
+<p>Break instruction dependency chains in the innermost loop, increasing instruction throughput due to <a href="https://en.wikipedia.org/wiki/Instruction-level_parallelism">instruction level parallelism</a>.</p>
+<h3><a class="header" href="#v3-simd" id="v3-simd">v3: SIMD</a></h3>
+<p>Pack all values of the input matrix, and its transpose, row-wise into SIMD vector types and use <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs">SIMD instructions</a> explicitly, reducing the total amount of required instructions.</p>
+<h3><a class="header" href="#v4-register-reuse" id="v4-register-reuse">v4: Register reuse</a></h3>
+<p>Read the input and its transpose in 3-row blocks of SIMD vectors and compute 9 results for each combination of vector pairs in the block, reducing the amount of required memory accesses.</p>
+<h3><a class="header" href="#v5-more-register-reuse" id="v5-more-register-reuse">v5: More register reuse</a></h3>
+<p>Reorder the input matrix and its transpose by packing the data into SIMD vectors vertically, instead of horizontally. Read the vertically ordered data row-wise in pairs of 2 vectors, create 4 different permutations from the SIMD vector elements and compute 8 results for each pair, further reducing the amount of required memory accesses.</p>
+<h3><a class="header" href="#v6-prefetch" id="v6-prefetch">v6: Prefetch</a></h3>
+<p>Add prefetch hint instructions to take advantage of vacant CPU execution ports that are reserved for integer operations (since we are mostly using floating point arithmetic).</p>
+<h3><a class="header" href="#v7-cache-reuse" id="v7-cache-reuse">v7: Cache reuse</a></h3>
+<p>Add a <a href="https://en.wikipedia.org/wiki/Z-order_curve">Z-order curve</a> memory access pattern and process input in multiple passes one vertical stripe at a time, slightly improving data locality from cache reuse.</p>
+<h2><a class="header" href="#compilation-infrastructure" id="compilation-infrastructure">Compilation infrastructure</a></h2>
+<p>Here's an approximate overview of the benchmark program and how everything is tied together.</p>
+<p><img src="img/benchmark-infrastructure.png" alt="Sketch of benchmark infrastructure" /></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+                            <a rel="next" href="cpp_abi.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+                    <a href="cpp_abi.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v4 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html" class="active">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#register-reuse" id="register-reuse">Register reuse</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v4_register_reuse/src/lib.rs">Full source</a></p>
+<p>In this version we are really starting to speed things up.
+We will use a combination of ILP, SIMD, and loop unrolling to maximize CPU register usage in the hottest loop of the <code>step_row</code> function.
+The Intel CPUs we are targeting have 16 <a href="https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions">AVX registers</a>, each 256 bits wide, which match one-to-one with the <code>f32x8</code> type we have been using.
+We'll use the same approach as in the <a href="http://ppc.cs.aalto.fi/ch2/v4/">reference implementation</a>, which is to load 6 <code>f32x8</code> vectors from memory at each iteration and compute 9 results by combining all pairs.</p>
+<p><a href="http://ppc.cs.aalto.fi/ch2/v4.png">Here</a> is a visualization that shows the big picture of what is happening.</p>
+<p>First, we will group all rows of <code>vd</code> and <code>vt</code> into blocks of 3 rows.
+Then, for every pair of 3-row blocks, we read 3+3 <code>f32x8</code>s and accumulate 9 different, intermediate <code>f32x8</code> results from the cartesian product of the vector pairs.
+Finally, we extract values from the results accumulated in 9 <code>f32x8</code>s and write them to <code>r</code> in correct order.
+The high-level idea is the same as in our other approaches: to do a bit of extra work outside the performance critical loop in order to do significantly less work inside the loop.</p>
+<h2><a class="header" href="#implementing-step_row_block" id="implementing-step_row_block">Implementing <code>step_row_block</code></a></h2>
+<p>Like in <a href="v2.html"><code>v2</code></a>, we need to add some padding to make the amount of rows divisible by 3.
+This time, however, we add the padding at the bottom of <code>vd</code> and <code>vt</code>, since the blocks are grouped vertically, by row.
+Preprocessing is almost exactly the same as in <a href="v3.html"><code>v3</code></a>, we pack all elements of <code>d</code> as <code>f32x8</code> vectors into <code>vd</code> and its transpose <code>vt</code>, except for the few extra rows at the bottom (unless the amount of rows is already divisible by 3):</p>
+<pre><code class="language-rust no_run noplaypen">    const BLOCK_HEIGHT: usize = 3;
+    let blocks_per_col = (n + BLOCK_HEIGHT - 1) / BLOCK_HEIGHT;
+    let vecs_per_row = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+    let padded_height = BLOCK_HEIGHT * blocks_per_col;
+    // Preprocess exactly as in v3_simd,
+    // but make sure the amount of rows is divisible by BLOCK_HEIGHT
+    let mut vd = std::vec![simd::f32x8_infty(); padded_height * vecs_per_row];
+    let mut vt = std::vec![simd::f32x8_infty(); padded_height * vecs_per_row];
+</code></pre>
+<p>Since we are processing rows in blocks of 3, it is probably easiest to also write results for 3 rows at a time.
+Then we can chunk <code>vd</code> and <code>r</code> into 3-row blocks, zip them up, apply <code>step_row_block</code> in parallel such that each thread writes results for one block of 3 rows from <code>vd</code> into 3 rows of <code>r</code>.
+Inside <code>step_row_block</code>, every thread will chunk <code>vt</code> into 3-row blocks, and computes results for every pair of <code>vt</code> row block <code>j</code> and <code>vd</code> row block <code>i</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: For a row block vd_row_block containing 3 rows of f32x8 vectors,
+    // compute results for all row combinations of vd_row_block and row blocks of vt
+    let step_row_block = |(i, (r_row_block, vd_row_block)): (usize, (&amp;mut [f32], &amp;[f32x8]))| {
+        // Chunk up vt into blocks exactly as vd
+        let vt_row_blocks = vt.chunks_exact(BLOCK_HEIGHT * vecs_per_row);
+        // Compute results for all combinations of row blocks from vd and vt
+        for (j, vt_row_block) in vt_row_blocks.enumerate() {
+</code></pre>
+<p>Then, for every pair of row blocks <code>vd_row_block</code> and <code>vt_row_block</code>, we iterate over their columns, computing all 9 combinations of 3 <code>f32x8</code> vectors from <code>vd_row_block</code> and 3 <code>f32x8</code> vectors from <code>vt_row_block</code>, and add the results to the 9 intermediate results.
+Before we go into the most performance-critical loop, we initialize 9 intermediate results to <code>f32x8</code> vectors (each containing 8 <code>f32::INFINITY</code>s), and extract all 6 rows from both row blocks:</p>
+<pre><code class="language-rust no_run noplaypen">            // Partial results for 9 f32x8 row pairs
+            // All as separate variables to encourage the compiler
+            // to keep these values in 9 registers for the duration of the loop
+            let mut tmp0 = simd::f32x8_infty();
+            let mut tmp1 = simd::f32x8_infty();
+            let mut tmp2 = simd::f32x8_infty();
+            let mut tmp3 = simd::f32x8_infty();
+            let mut tmp4 = simd::f32x8_infty();
+            let mut tmp5 = simd::f32x8_infty();
+            let mut tmp6 = simd::f32x8_infty();
+            let mut tmp7 = simd::f32x8_infty();
+            let mut tmp8 = simd::f32x8_infty();
+            // Extract all rows from the row blocks
+            let mut vd_rows = vd_row_block.chunks_exact(vecs_per_row);
+            let mut vt_rows = vt_row_block.chunks_exact(vecs_per_row);
+            let (vd_row_0, vd_row_1, vd_row_2) = vd_rows.next_tuple().unwrap();
+            let (vt_row_0, vt_row_1, vt_row_2) = vt_rows.next_tuple().unwrap();
+</code></pre>
+<p>The reason we are not using a <code>tmp</code> array of 9 values is that the compiler was not keeping those 9 values in registers for the duration of the loop.</p>
+<p>Now everything is set up for iterating column-wise, computing the usual &quot;addition + minimum&quot; between every element in <code>vt</code> and <code>vd</code>.
+This time, we will load 6 <code>f32x8</code> vectors at each iteration, and compute 9 results in total.
+We'll use the <a href="https://docs.rs/itertools/0.8.0/itertools/macro.izip.html"><code>izip</code>-macro</a> from the <code>itertools</code> crate to get a nice, flattened tuple of row elements at each iteration:</p>
+<pre><code class="language-rust no_run noplaypen">            // Move horizontally, computing 3 x 3 results for each column
+            // At each iteration, load two 'vertical stripes' of 3 f32x8 vectors
+            let rows = izip!(vd_row_0, vd_row_1, vd_row_2, vt_row_0, vt_row_1, vt_row_2);
+            for (&amp;d0, &amp;d1, &amp;d2, &amp;t0, &amp;t1, &amp;t2) in rows {
+                // Combine all 9 pairs of f32x8 vectors from 6 rows at every column
+                tmp0 = simd::min(tmp0, simd::add(d0, t0));
+                tmp1 = simd::min(tmp1, simd::add(d0, t1));
+                tmp2 = simd::min(tmp2, simd::add(d0, t2));
+                tmp3 = simd::min(tmp3, simd::add(d1, t0));
+                tmp4 = simd::min(tmp4, simd::add(d1, t1));
+                tmp5 = simd::min(tmp5, simd::add(d1, t2));
+                tmp6 = simd::min(tmp6, simd::add(d2, t0));
+                tmp7 = simd::min(tmp7, simd::add(d2, t1));
+                tmp8 = simd::min(tmp8, simd::add(d2, t2));
+            }
+</code></pre>
+<p>After we have iterated over all columns, we offset the block row indexes <code>i</code> and <code>j</code> so that we get a proper index mapping to the indexes of <code>r</code>, extract final results from all 9 intermediate results, and finally write them to <code>r</code>:</p>
+<pre><code class="language-rust no_run noplaypen">            let tmp = [tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8];
+            // Set 9 final results for all combinations of 3 rows starting at i and 3 rows starting at j
+            for (block_i, (r_row, tmp_row)) in r_row_block.chunks_exact_mut(n).zip(tmp.chunks_exact(BLOCK_HEIGHT)).enumerate() {
+                for (block_j, &amp;tmp_res) in tmp_row.iter().enumerate() {
+                    let res_i = i * BLOCK_HEIGHT + block_i;
+                    let res_j = j * BLOCK_HEIGHT + block_j;
+                    if res_i &lt; n &amp;&amp; res_j &lt; n {
+                        // Reduce one f32x8 to the final result for one pair of rows
+                        r_row[res_j] = simd::horizontal_min(tmp_res);
+                    }
+                }
+            }
+</code></pre>
+<h2><a class="header" href="#full-step_row_block-implementation" id="full-step_row_block-implementation">Full <code>step_row_block</code> implementation</a></h2>
+<pre><code class="language-rust no_run noplaypen">    // Function: For a row block vd_row_block containing 3 rows of f32x8 vectors,
+    // compute results for all row combinations of vd_row_block and row blocks of vt
+    let step_row_block = |(i, (r_row_block, vd_row_block)): (usize, (&amp;mut [f32], &amp;[f32x8]))| {
+        // Chunk up vt into blocks exactly as vd
+        let vt_row_blocks = vt.chunks_exact(BLOCK_HEIGHT * vecs_per_row);
+        // Compute results for all combinations of row blocks from vd and vt
+        for (j, vt_row_block) in vt_row_blocks.enumerate() {
+            // Partial results for 9 f32x8 row pairs
+            // All as separate variables to encourage the compiler
+            // to keep these values in 9 registers for the duration of the loop
+            let mut tmp0 = simd::f32x8_infty();
+            let mut tmp1 = simd::f32x8_infty();
+            let mut tmp2 = simd::f32x8_infty();
+            let mut tmp3 = simd::f32x8_infty();
+            let mut tmp4 = simd::f32x8_infty();
+            let mut tmp5 = simd::f32x8_infty();
+            let mut tmp6 = simd::f32x8_infty();
+            let mut tmp7 = simd::f32x8_infty();
+            let mut tmp8 = simd::f32x8_infty();
+            // Extract all rows from the row blocks
+            let mut vd_rows = vd_row_block.chunks_exact(vecs_per_row);
+            let mut vt_rows = vt_row_block.chunks_exact(vecs_per_row);
+            let (vd_row_0, vd_row_1, vd_row_2) = vd_rows.next_tuple().unwrap();
+            let (vt_row_0, vt_row_1, vt_row_2) = vt_rows.next_tuple().unwrap();
+            // Move horizontally, computing 3 x 3 results for each column
+            // At each iteration, load two 'vertical stripes' of 3 f32x8 vectors
+            let rows = izip!(vd_row_0, vd_row_1, vd_row_2, vt_row_0, vt_row_1, vt_row_2);
+            for (&amp;d0, &amp;d1, &amp;d2, &amp;t0, &amp;t1, &amp;t2) in rows {
+                // Combine all 9 pairs of f32x8 vectors from 6 rows at every column
+                tmp0 = simd::min(tmp0, simd::add(d0, t0));
+                tmp1 = simd::min(tmp1, simd::add(d0, t1));
+                tmp2 = simd::min(tmp2, simd::add(d0, t2));
+                tmp3 = simd::min(tmp3, simd::add(d1, t0));
+                tmp4 = simd::min(tmp4, simd::add(d1, t1));
+                tmp5 = simd::min(tmp5, simd::add(d1, t2));
+                tmp6 = simd::min(tmp6, simd::add(d2, t0));
+                tmp7 = simd::min(tmp7, simd::add(d2, t1));
+                tmp8 = simd::min(tmp8, simd::add(d2, t2));
+            }
+            let tmp = [tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8];
+            // Set 9 final results for all combinations of 3 rows starting at i and 3 rows starting at j
+            for (block_i, (r_row, tmp_row)) in r_row_block.chunks_exact_mut(n).zip(tmp.chunks_exact(BLOCK_HEIGHT)).enumerate() {
+                for (block_j, &amp;tmp_res) in tmp_row.iter().enumerate() {
+                    let res_i = i * BLOCK_HEIGHT + block_i;
+                    let res_j = j * BLOCK_HEIGHT + block_j;
+                    if res_i &lt; n &amp;&amp; res_j &lt; n {
+                        // Reduce one f32x8 to the final result for one pair of rows
+                        r_row[res_j] = simd::horizontal_min(tmp_res);
+                    }
+                }
+            }
+        }
+    };
+    r.par_chunks_mut(BLOCK_HEIGHT * n)
+        .zip(vd.par_chunks(BLOCK_HEIGHT * vecs_per_row))
+        .enumerate()
+        .for_each(step_row_block);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>Let's run benchmarks with the same settings as before: <code>n = 6000</code>, single iteration, four threads bound to four cores.
+C++ version available <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v4_register_reuse/step.cpp">here</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v4</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">4.2</td><td align="left">2.26</td></tr>
+<tr><td align="left">C++ <code>v4</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">3.7</td><td align="left">1.92</td></tr>
+<tr><td align="left">Rust <code>v4</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">3.6</td><td align="left">1.98</td></tr>
+</tbody></table>
+<h3><a class="header" href="#gcc" id="gcc"><code>gcc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm2,YMMWORD PTR [rdx]
+    vmovaps ymm14,YMMWORD PTR [rax]
+    lea     rcx,[rdx+r8*1]
+    add     rdx,0x20
+    vmovaps ymm1,YMMWORD PTR [rcx+r11*1]
+    vmovaps ymm0,YMMWORD PTR [rcx+rdi*1]
+    lea     rcx,[rbx+rax*1]
+    add     rax,0x20
+    vaddps  ymm15,ymm2,ymm14
+    vmovaps ymm3,YMMWORD PTR [rcx+r15*1]
+    vmovaps ymm13,YMMWORD PTR [rcx+r14*1]
+    vminps  ymm4,ymm4,ymm15
+    vaddps  ymm15,ymm1,ymm14
+    vaddps  ymm14,ymm0,ymm14
+    vminps  ymm5,ymm5,ymm15
+    vmovaps YMMWORD PTR [rbp-0x170],ymm4
+    vminps  ymm6,ymm6,ymm14
+    vaddps  ymm14,ymm2,ymm3
+    vaddps  ymm2,ymm2,ymm13
+    vmovaps YMMWORD PTR [rbp-0x150],ymm5
+    vminps  ymm7,ymm7,ymm14
+    vaddps  ymm14,ymm1,ymm3
+    vmovaps YMMWORD PTR [rbp-0x130],ymm6
+    vaddps  ymm3,ymm0,ymm3
+    vaddps  ymm1,ymm1,ymm13
+    vaddps  ymm0,ymm0,ymm13
+    vminps  ymm10,ymm10,ymm2
+    vminps  ymm8,ymm8,ymm14
+    vmovaps YMMWORD PTR [rbp-0x110],ymm7
+    vminps  ymm9,ymm9,ymm3
+    vminps  ymm11,ymm11,ymm1
+    vminps  ymm12,ymm12,ymm0
+    vmovaps YMMWORD PTR [rbp-0xb0],ymm10
+    vmovaps YMMWORD PTR [rbp-0xf0],ymm8
+    vmovaps YMMWORD PTR [rbp-0xd0],ymm9
+    vmovaps YMMWORD PTR [rbp-0x90],ymm11
+    vmovaps YMMWORD PTR [rbp-0x70],ymm12
+    cmp     rax,rsi
+    jne     LOOP
+
+</code></pre>
+<p>We see the expected output of 6 memory loads and 9+9 arithmetic instructions, but also quite a lot of register spilling in the middle and end of the loop.</p>
+<p>It is unclear why the compiler decided to write intermediate results into memory already inside the loop, instead of keeping them in registers and doing the writing after the loop.
+When compiling with <code>gcc 9.1.0</code>, these problems disappear.</p>
+<h3><a class="header" href="#clang" id="clang"><code>clang</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm10,YMMWORD PTR [rdx+rbx*1]
+    vmovaps ymm11,YMMWORD PTR [rcx+rbx*1]
+    vmovaps ymm12,YMMWORD PTR [rax+rbx*1]
+    vmovaps ymm13,YMMWORD PTR [rbp+rbx*1+0x0]
+    vmovaps ymm14,YMMWORD PTR [rsi+rbx*1]
+    vmovaps ymm15,YMMWORD PTR [r8+rbx*1]
+    vaddps  ymm0,ymm10,ymm13
+    vminps  ymm9,ymm9,ymm0
+    vaddps  ymm0,ymm11,ymm13
+    vminps  ymm8,ymm8,ymm0
+    vaddps  ymm0,ymm12,ymm13
+    vminps  ymm7,ymm7,ymm0
+    vaddps  ymm0,ymm10,ymm14
+    vminps  ymm6,ymm6,ymm0
+    vaddps  ymm0,ymm11,ymm14
+    vminps  ymm5,ymm5,ymm0
+    vaddps  ymm0,ymm12,ymm14
+    vminps  ymm4,ymm4,ymm0
+    vaddps  ymm0,ymm10,ymm15
+    vminps  ymm3,ymm3,ymm0
+    vaddps  ymm0,ymm11,ymm15
+    vminps  ymm2,ymm2,ymm0
+    vaddps  ymm0,ymm12,ymm15
+    vminps  ymm1,ymm1,ymm0
+    add     rdi,0x1
+    add     rbx,0x20
+    cmp     rdi,r10
+    jl      LOOP
+
+</code></pre>
+<p>This is a fairly clean and straightforward loop with almost nothing extra.
+We load 6 SIMD vectors to 256-bit registers <code>ymm10-ymm15</code> and accumulate the results into 9 registers <code>ymm1-ymm9</code>, keeping <code>ymm0</code> as a temporary variable.
+Notice how <code>rbx</code> is incremented by 32 bytes at each iteration, which is the size of a 256-bit SIMD vector.</p>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm10,YMMWORD PTR [r9+rbx*1]
+    vmovaps ymm11,YMMWORD PTR [rax+rbx*1]
+    vmovaps ymm12,YMMWORD PTR [rcx+rbx*1]
+    vmovaps ymm13,YMMWORD PTR [r10+rbx*1]
+    vmovaps ymm14,YMMWORD PTR [r8+rbx*1]
+    vmovaps ymm15,YMMWORD PTR [rdx+rbx*1]
+    vaddps  ymm0,ymm10,ymm13
+    vminps  ymm9,ymm9,ymm0
+    vaddps  ymm0,ymm10,ymm14
+    vminps  ymm8,ymm8,ymm0
+    vaddps  ymm0,ymm10,ymm15
+    vminps  ymm7,ymm7,ymm0
+    vaddps  ymm0,ymm11,ymm13
+    vminps  ymm6,ymm6,ymm0
+    vaddps  ymm0,ymm11,ymm14
+    vminps  ymm5,ymm5,ymm0
+    vaddps  ymm0,ymm11,ymm15
+    vminps  ymm4,ymm4,ymm0
+    vaddps  ymm0,ymm12,ymm13
+    vminps  ymm3,ymm3,ymm0
+    vaddps  ymm0,ymm12,ymm14
+    vminps  ymm2,ymm2,ymm0
+    vaddps  ymm0,ymm12,ymm15
+    vminps  ymm1,ymm1,ymm0
+    add     rbx,0x20
+    dec     r13
+    jne     LOOP
+
+</code></pre>
+<p>Same as <code>clang</code>s output, but instead of a loop counter that goes up, <code>r13</code> is decremented on each iteration.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="v3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="v3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

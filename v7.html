@@ -1,0 +1,375 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v7 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html" class="active">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#cache-reuse" id="cache-reuse">Cache reuse</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v7_cache_reuse/src/lib.rs">Full source</a></p>
+<p>In our final version, we will attempt to increase cache locality also for data from <code>vt</code>, by reading <code>f32x8</code> row pairs from <code>vd</code> and <code>vt</code> using a <a href="https://en.wikipedia.org/wiki/Z-order_curve">Z-order curve</a> iteration pattern.
+If you look at <a href="http://ppc.cs.aalto.fi/cache2">this animation</a>, we will implement the last pattern to the right.
+Please see the <a href="http://ppc.cs.aalto.fi/ch2/v7/">reference materials</a> for a detailed explanation.</p>
+<h2><a class="header" href="#implementation" id="implementation">Implementation</a></h2>
+<p>This version will be an extension to <a href="v5.html"><code>v5</code></a>, and we won't be using the prefetching hints seen in <a href="v6.html"><code>v6</code></a>.
+There won't be any changes to the performance critical loop or result extraction.
+However, we need to rewrite most of the code to support the Z-order iteration pattern.
+Our approach will be the same as in the reference implementation:</p>
+<ol>
+<li>Create a 2-dimensional Z-order index pattern by sorting the interleaved bits of row index <code>i</code> and column index <code>j</code>.</li>
+<li>Compute partial results in vertical stripes of 500 columns.</li>
+<li>Extract final results from partial results.</li>
+</ol>
+<h3><a class="header" href="#preparation" id="preparation">Preparation</a></h3>
+<p>We start by defining some constants.
+We'll fix the width of all vertical stripes to 500 columns.</p>
+<pre><code class="language-rust no_run noplaypen">    // How many adjacent columns to process during one pass
+    // Smaller numbers improve cache locality but add overhead
+    // from having to merge partial results
+    const COLS_PER_STRIPE: usize = 500;
+    let vecs_per_col = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+</code></pre>
+<p>Then we create the 2-dimensional Z-order pattern for pairs of <code>i</code> and <code>j</code>.
+We'll use the same trick as in the reference implementation, which is to use the <a href="https://software.intel.com/sites/landingpage/IntrinsicsGuide/#=undefined&amp;text=_pdep_u32">parallel deposit</a> intrinsic function for scattering the bits of <code>i</code> into odd indexed bits, <code>j</code> into even indexed bits, and <code>OR</code> the results.
+We wrap it into a function <code>z_encode</code> and put it into our toolbox:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline]
+pub fn z_encode(x: u32, y: u32) -&gt; u32 {
+    let odd_bits = 0x55555555;
+    let even_bits = 0xAAAAAAAA;
+    unsafe { _pdep_u32(x, odd_bits) | _pdep_u32(y, even_bits) }
+}
+</code></pre>
+<p>If <code>n</code> would always be a power of 2, there would be no need to handle edge cases, since <code>z_encode</code> would always return the correct <code>z</code>-index.
+However, when <code>n</code> is not a power of 2, we must make sure to skip all <code>z</code>-indexes that are out of bounds.
+We use the same approach as in the reference solution, which is to create a vector <code>row_pairs</code> containing 3-tuples <code>(z_encode(i, j), i, j)</code> and sort it by the <code>z</code>-index.
+When we enumerate the sorted <code>row_pairs</code>, we get correct <code>z</code>-indexes that do not include out of bounds row and column indexes.</p>
+<pre><code class="language-rust no_run noplaypen">    // Build a Z-order curve iteration pattern of pairs (i, j)
+    // by using interleaved bits of i and j as a sort key
+    let mut row_pairs = std::vec![(0, 0, 0); vecs_per_col * vecs_per_col];
+    // Define a function that interleaves one row of indexes
+    let interleave_row = |(i, row): (usize, &amp;mut [(usize, usize, usize)])| {
+        for (j, x) in row.iter_mut().enumerate() {
+            let z = z_encode(i as u32, j as u32);
+            *x = (z as usize, i, j);
+        }
+    };
+    // Apply the function independently on all rows and sort by ija
+    row_pairs
+        .par_chunks_mut(vecs_per_col)
+        .enumerate()
+        .for_each(interleave_row);
+    // We don't need stable sort since there are no duplicate keys
+    row_pairs.par_sort_unstable();
+</code></pre>
+<p>Recall how we used an 8-by-8 <code>tmp</code> block in previous versions to store partial results.
+In this version, we'll store a <code>tmp</code> block for every Z-order index pair <code>(i, j)</code> into <code>partial_results</code>.
+By storing <code>tmp</code> blocks into <code>partial_results</code> for every index pair, we can fairly easily load and write into the correct <code>tmp</code> block when we process each vertical stripe of data.</p>
+<pre><code class="language-rust no_run noplaypen">    // We'll be processing the input one stripe at a time
+    let mut vd = std::vec![simd::f32x8_infty(); COLS_PER_STRIPE * vecs_per_col];
+    let mut vt = std::vec![simd::f32x8_infty(); COLS_PER_STRIPE * vecs_per_col];
+    // Non-overlapping working memory for threads to update their results
+    // When enumerated in 8 element chunks, indexes the Z-order curve keys
+    let mut partial_results = std::vec![simd::f32x8_infty(); vecs_per_col * vecs_per_col * simd::f32x8_LENGTH];
+</code></pre>
+<h3><a class="header" href="#computing-results-in-vertical-stripes" id="computing-results-in-vertical-stripes">Computing results in vertical stripes</a></h3>
+<p>Now, we will compute all the results.
+Note that we haven't initialized the values for <code>vd</code> and <code>vt</code> yet.
+We'll do it inside the loop, one stripe at a time.
+Here's a brief overview what happens during one pass over one stripe:</p>
+<pre><code class="language-rust no_run noplaypen">    // Process vd and vt in Z-order one vertical stripe at a time, writing partial results in parallel
+    let num_vertical_stripes = (n + COLS_PER_STRIPE - 1) / COLS_PER_STRIPE;
+    for stripe in 0..num_vertical_stripes {
+        let col_begin = stripe * COLS_PER_STRIPE;
+        let col_end = n.min((stripe + 1) * COLS_PER_STRIPE);
+        // ...
+        // pack one stripe of vd and vt from d
+        // ...
+        // 1. load results from previous stripe
+        // 2. compute results for this stripe
+        // 3. save results for next stripe
+    }
+
+</code></pre>
+<p>The actual computation is not very different from <a href="v5.html"><code>v5</code></a>, except that we are processing <code>vd</code> and <code>vt</code> in stripes.
+Also, we cannot extract results before we have processed all stripes, so each thread will load and save a <code>tmp</code> block from <code>partial_results</code> for every pair of indexes <code>i</code> and <code>j</code>.
+After loading one stripe of <code>vd</code> and <code>vt</code> from <code>d</code>, we process them in Z-order using index pairs <code>(i, j)</code> from <code>row_pairs</code>.
+If we enumerate <code>row_pairs</code>, we also get the index of each <code>tmp</code> block in <code>partial_results</code>, so we might as well zip <code>row_pairs</code> with <code>partial_results</code> to avoid using the <code>z</code>-indexes directly.
+We apply <code>step_partial_block</code> in parallel such that each thread computes results for one <code>tmp</code> block at index <code>z</code> in <code>partial_results</code> and index pair <code>(i, j)</code> at index <code>z</code> in <code>row_pairs</code>:</p>
+<pre><code class="language-rust no_run noplaypen">        // Function: for a f32x8 block of partial results and indexes row i col j,
+        // 1. Load tmp from partial results
+        // 2. Accumulate results for row i and column j into tmp
+        // 3. Write tmp into the original partial results block
+        let step_partial_block = |(prev_tmp, &amp;(_, i, j)): (&amp;mut [f32x8], &amp;(usize, usize, usize))| {
+            // Copy results from previous pass over previous stripe
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            tmp.copy_from_slice(&amp;prev_tmp);
+            // Get slices over current stripes of row i and column j
+            let vd_row = &amp;vd[(COLS_PER_STRIPE * i)..(COLS_PER_STRIPE * (i + 1))];
+            let vt_row = &amp;vt[(COLS_PER_STRIPE * j)..(COLS_PER_STRIPE * (j + 1))];
+            for (&amp;d0, &amp;t0) in vd_row.iter().zip(vt_row) {
+                let d2 = simd::swap(d0, 2);
+                let d4 = simd::swap(d0, 4);
+                let d6 = simd::swap(d4, 2);
+                let t1 = simd::swap(t0, 1);
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+            // Store partial results (8 vecs of type f32x8) to global memory
+            // for processing next stripe
+            prev_tmp.copy_from_slice(&amp;tmp);
+        };
+        // Process current stripe in parallel, each thread filling one `tmp` block
+        partial_results
+            .par_chunks_mut(simd::f32x8_LENGTH)
+            .zip(row_pairs.par_iter())
+            .for_each(step_partial_block);
+</code></pre>
+<h3><a class="header" href="#extracting-results" id="extracting-results">Extracting results</a></h3>
+<p>After accumulating results over each vertical stripe, we need to extract all results from the partial results that are in Z-order.</p>
+<p>First, let's replace the <code>z</code>-indexes in <code>row_pairs</code> with a linear index and sort <code>row_pairs</code> by <code>(i, j)</code> in order to get a mapping from <code>z</code> to the correct partial result.
+This allows us to chunk <code>r</code> into rows indexed by <code>i</code>, and write all results to each row element at <code>j</code> by reading <code>partial_results</code> linearly.</p>
+<pre><code class="language-rust no_run noplaypen">    // Replace ij sorting key by linear index to get a mapping to partial_results,
+    // then sort row_pairs by (i, j)
+    let replace_z_index_row = |(z_row, index_row): (usize, &amp;mut [(usize, usize, usize)])| {
+        for (z, idx) in index_row.iter_mut().enumerate() {
+            let (_, i, j) = *idx;
+            *idx = (z_row * vecs_per_col + z, i, j);
+        }
+    };
+    let key_ij = |&amp;idx: &amp;(usize, usize, usize)| { (idx.1, idx.2) };
+    row_pairs
+        .par_chunks_mut(vecs_per_col)
+        .enumerate()
+        .for_each(replace_z_index_row);
+    row_pairs.par_sort_unstable_by_key(key_ij);
+</code></pre>
+<p>Now, <code>row_pairs</code> is ordered linearly, first by <code>i</code> then by <code>j</code>, such that the first element in each tuple element of <code>row_pairs</code> corresponds to the starting index of an 8-by-8 <code>tmp</code> block in <code>partial_results</code>.</p>
+<p>We chunk <code>r</code> into 8-row blocks and read the <code>tmp</code> result blocks from <code>partial_results</code> and extract 64 <code>f32</code> results exactly as in <a href="v5.html"><code>v5</code></a>.</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in r starting at row i*8,
+    // read partial results at z-index corresponding to each row i and column j
+    // and write them to r
+    let set_z_order_result_block = |(i, r_row_block): (usize, &amp;mut [f32])| {
+        for j in 0..vecs_per_col {
+            // Get z-order index for row i and column j
+            let z = row_pairs[i * vecs_per_col + j].0 * simd::f32x8_LENGTH;
+            // Load tmp from z-order partial results for this i, j pair
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            tmp.copy_from_slice(&amp;partial_results[z..z + simd::f32x8_LENGTH]);
+            // Continue exactly as in v5
+            for k in (1..simd::f32x8_LENGTH).step_by(2) {
+                tmp[k] = simd::swap(tmp[k], 1);
+            }
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+        }
+    };
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .enumerate()
+        .for_each(set_z_order_result_block);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v7</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">2.04</td><td align="left">2.94</td></tr>
+<tr><td align="left">C++ <code>v7</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">2.16</td><td align="left">2.20</td></tr>
+<tr><td align="left">Rust <code>v7</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">2.25</td><td align="left">2.79</td></tr>
+</tbody></table>
+<p>We managed to get a small improvement compared to the Rust program from <a href="v5.html"><code>v5</code></a>, but not as much as in the C++ versions.
+The performance critical loop is the same as in <a href="v5.html"><code>v5</code></a>, which means we cannot search for answers in the assembly code, or at least not as easily as previously.
+One possible performance bottleneck could be that we sort the Z-order indexes twice in the Rust program, while it is done only once in the C++ version.
+Using a better approach for Z-order encoding and decoding might help reducing the running times.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="v6.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="results.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="v6.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="results.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

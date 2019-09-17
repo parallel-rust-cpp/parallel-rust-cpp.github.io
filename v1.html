@@ -1,0 +1,427 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v1 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html" class="active">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#linear-reading" id="linear-reading">Linear reading</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v1_linear_reading/src/lib.rs">Full source</a></p>
+<p>To enable a linear memory access pattern, the <a href="http://ppc.cs.aalto.fi/ch2/v1/">reference solution</a> introduces a Θ(n²) preprocessing step that allocates additional space for storing the transpose of <code>d</code> in row-major order.
+This allows us to read the columns of <code>d</code> linearly, using fully packed cache lines on each read.</p>
+<p>The easiest way of allocating memory on the heap for contiguous elements is probably by creating a <a href="https://doc.rust-lang.org/1.37.0/std/vec/struct.Vec.html">vector</a>, which is a struct containing a pointer, size, and length.
+We use the <code>std::vec</code> compile-time macro to create a mutable vector of length <code>n * n</code>, with all elements initialized to the value <code>0.0</code>, and then fill it with the transpose of <code>d</code>.
+Note that there is no need to annotate the type of the vector, since <code>f32</code> is inferred from context:</p>
+<pre><code class="language-rust no_run noplaypen">    // Transpose of d
+    let mut t = std::vec![0.0; n * n];
+    // Function: for some column j in d,
+    // copy all elements of that column into row i in t (t_row)
+    let transpose_column = |(j, t_row): (usize, &amp;mut [f32])| {
+        for (i, x) in t_row.iter_mut().enumerate() {
+            *x = d[n*i + j];
+        }
+    };
+    // Copy all columns of d into rows of t in parallel
+    t.par_chunks_mut(n)
+        .enumerate()
+        .for_each(transpose_column);
+</code></pre>
+<p>Now all columns of <code>d</code> have been stored as rows in <code>t</code>, and all we have to do is to iterate over all row pair combinations of <code>d</code> and <code>t</code>.
+As previously, we partition <code>r</code> into <code>n</code> non-overlapping, mutable rows such that each thread is working on one row at a time:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row i in d and all rows t,
+    // compute n results into row i in r (r_row)
+    let step_row = |(i, r_row): (usize, &amp;mut [f32])| {
+        for (j, res) in r_row.iter_mut().enumerate() {
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d[n*i + k];
+                let y = t[n*j + k];
+                let z = x + y;
+                v = v.min(z);
+            }
+            *res = v;
+        }
+    };
+    // Partition r into rows containing n elements,
+    // and apply step_row on all rows in parallel
+    r.par_chunks_mut(n)
+        .enumerate()
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>We'll use the same settings as in <a href="v0.html"><code>v0</code></a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">114.6</td><td align="left">2.11</td></tr>
+</tbody></table>
+<p>The linear memory access pattern helps a lot here, compared to what we had in the previous version.
+However, the Rust program is struggling to keep up, executing twice the amount of instructions per cycle as the C++ program while being almost two times slower.
+In the previous chapter, we talked about array bounds checking and <code>NaN</code> checks not affecting the running time due to a bad memory access pattern.
+We fixed the memory access pattern but now the extra instructions are starting to slow us down.</p>
+<p>Let's look at the most recent output from <code>rustc</code> to see these extra instructions.
+This time, we skip <code>gcc</code> and <code>clang</code>, because they produced almost the same output as in <a href="v0.html"><code>v0</code></a>.</p>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<p>Not much has changed from <a href="v0.html"><code>v0</code></a>, except that there is even more registers involved in doing bounds checking.</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp         rax,rdx
+    jae         13e
+    mov         rcx,QWORD PTR [rbx+0x10]
+    cmp         rcx,rsi
+    jbe         150
+    mov         rcx,QWORD PTR [rbx]
+    mov         r10,QWORD PTR [r15]
+    vmovss      xmm2,DWORD PTR [r10+rax*4]
+    vaddss      xmm2,xmm2,DWORD PTR [rcx+rsi*4]
+    vminss      xmm3,xmm2,xmm1
+    vcmpunordss xmm1,xmm1,xmm1
+    vblendvps   xmm1,xmm3,xmm2,xmm1
+    inc         rsi
+    inc         rax
+    dec         rdi
+    jne         LOOP
+
+</code></pre>
+<p>Running the Rust program benchmark with <a href="https://linux.die.net/man/1/perf-record"><code>perf-record</code></a> suggests that a significant amount of the running time is spent doing <code>NaN</code> checks with <code>vcmpunordss</code> and <code>vblendvps</code>.</p>
+<h3><a class="header" href="#dealing-with-the-nan-check" id="dealing-with-the-nan-check">Dealing with the <code>NaN</code> check</a></h3>
+<p>Let's remove the <code>NaN</code> checks by replacing <code>f32::min</code> in the inner loop by a simple <code>if-else</code> expression:</p>
+<pre><code class="language-rust no_run noplaypen">    for k in 0..n {
+        let x = d[n*i + k];
+        let y = t[n*j + k];
+        let z = x + y;
+        v = if v &lt; z { v } else { z };
+    }
+</code></pre>
+<p>Compiling and checking the output we see that the <code>NaN</code> checks are gone from our loop:</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp    rax,rdx
+    jae    133
+    mov    rcx,QWORD PTR [rbx+0x10]
+    cmp    rcx,rsi
+    jbe    145
+    mov    rcx,QWORD PTR [rbx]
+    mov    r10,QWORD PTR [r15]
+    vmovss xmm2,DWORD PTR [r10+rax*4]
+    vaddss xmm2,xmm2,DWORD PTR [rcx+rsi*4]
+    vminss xmm1,xmm1,xmm2
+    inc    rsi
+    inc    rax
+    dec    rdi
+    jne    LOOP
+
+</code></pre>
+<p>Benchmarking the Rust program shows that the running time also improved quite a lot:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">60.8</td><td align="left">3.43</td></tr>
+</tbody></table>
+<p>What about the array bounds checks?
+Our mid-range CPU seems to be handling them without any problems even in the most performance critical loop.
+However, the bounds checks are certainly not free, as we can see from the amount of IPC.
+The C++ implementation of <a href="v1.html"><code>v1</code></a> is a proof that it is possible to solve the problem with significantly less instructions.
+On other hand, we don't want to <a href="https://doc.rust-lang.org/1.37.0/std/primitive.slice.html#method.get_unchecked">remove the bounds checks</a> completely, since we'd prefer to use as little <code>unsafe</code> Rust as possible.</p>
+<h3><a class="header" href="#dealing-with-the-bounds-checks" id="dealing-with-the-bounds-checks">Dealing with the bounds checks</a></h3>
+<p>Our solution is similar to the preprocessing step of computing the transpose of <code>d</code>:
+We will perform a bit of extra work outside the loop to remove a lot of work from inside the loop.
+If we extract one row of <code>d</code> and one row of <code>t</code> as subslices before the inner loop starts, the compiler will have a chance to assert that the starting and ending index of the subslices are within the bounds of the slices we extract the subslices from:</p>
+<pre><code class="language-rust no_run noplaypen">    let step_row = |(i, r_row): (usize, &amp;mut [f32])| {
+        // Get a view of row i of d as a subslice
+        let d_row = &amp;d[n*i..n*(i+1)];
+        for (j, res) in r_row.iter_mut().enumerate() {
+            // Same for row j in t
+            let t_row = &amp;t[n*j..n*(j+1)];
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d_row[k];
+                let y = t_row[k];
+                let z = x + y;
+                v = if v &lt; z { v } else { z };
+            }
+            *res = v;
+        }
+    };
+</code></pre>
+<p>After compiling the program, we can see that the compiler still wants to check that <code>k</code> is in bounds.
+Since <code>rsi</code> is incremented by 1 after each iteration, and it is used to load two <code>f32</code>s, it is very likely equal to our <code>k</code>.</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp    r10,rsi
+    je     194
+    vmovss xmm2,DWORD PTR [rdx+rsi*4]
+    vaddss xmm2,xmm2,DWORD PTR [rax+rsi*4]
+    inc    rsi
+    vminss xmm1,xmm1,xmm2
+    cmp    rcx,rsi
+    jne    LOOP
+
+</code></pre>
+<p>Benchmarks show that the amount of IPC reduced significantly:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">60.6</td><td align="left">2.02</td></tr>
+</tbody></table>
+<p>Let's get all bounds checking out of the loop.
+We are currently using <code>k</code> only for accessing every element of <code>d_row</code> and <code>t_row</code> between <code>0..n</code>, so we might as well use <a href="https://doc.rust-lang.org/1.37.0/std/primitive.slice.html#method.iter">iterators</a> over both subslices.
+If we zip them them together, there's no need for <code>k</code> anymore.</p>
+<pre><code class="language-rust no_run noplaypen">    for (&amp;x, &amp;y) in d_row.iter().zip(t_row.iter()) {
+        let z = x + y;
+        v = if v &lt; z { v } else { z };
+    }
+</code></pre>
+<p>After compiling the program, we can see that not only did the compiler remove the bounds checks but it also unrolled 8 iterations of the loop:</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovss xmm2,DWORD PTR [r9+r15*4-0x1c]
+    vmovss xmm3,DWORD PTR [r9+r15*4-0x18]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0x1c]
+    vminss xmm1,xmm1,xmm2
+    vaddss xmm2,xmm3,DWORD PTR [r13+r15*4-0x18]
+    vmovss xmm3,DWORD PTR [r9+r15*4-0x14]
+    vaddss xmm3,xmm3,DWORD PTR [r13+r15*4-0x14]
+    vminss xmm1,xmm1,xmm2
+    vminss xmm1,xmm1,xmm3
+    vmovss xmm2,DWORD PTR [r9+r15*4-0x10]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0x10]
+    vminss xmm1,xmm1,xmm2
+    vmovss xmm2,DWORD PTR [r9+r15*4-0xc]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0xc]
+    vmovss xmm3,DWORD PTR [r9+r15*4-0x8]
+    vaddss xmm3,xmm3,DWORD PTR [r13+r15*4-0x8]
+    vminss xmm1,xmm1,xmm2
+    vminss xmm1,xmm1,xmm3
+    vmovss xmm2,DWORD PTR [r9+r15*4-0x4]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0x4]
+    vminss xmm1,xmm1,xmm2
+    vmovss xmm2,DWORD PTR [r9+r15*4]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4+0x0]
+    add    r15,0x8
+    vminss xmm1,xmm1,xmm2
+    cmp    rax,r15
+    jne    LOOP
+
+</code></pre>
+<p>Recall how <code>clang</code> unrolled the loop in <code>v0</code> in an exactly similar way.
+Since our program is still memory bottlenecked, the unrolling does not affect the running time.
+However, it does reduce the total amount of IPC:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">60.6</td><td align="left">0.92</td></tr>
+</tbody></table>
+<p>The reason for this is that we have more instructions doing the useful stuff (e.g. loading memory <code>vmovss</code>, addition <code>vaddss</code>, and computing minimums <code>vminss</code>) than loop related instructions such as comparisons and jumps.
+Compare this to the <code>gcc</code> single element loop of <a href="v0.html"><code>v0</code></a>.</p>
+<h3><a class="header" href="#iter-all-the-things" id="iter-all-the-things"><code>iter</code> all the things</a></h3>
+<p>If we succeeded in eliminating <code>k</code> from the innermost loop by using iterators, can we remove all loop variables with iterators?
+We are using <code>chunks_mut</code> to divide <code>r</code> into rows of length <code>n</code>, so why not do something similar with <code>d</code> and <code>t</code> but with immutable chunks instead?</p>
+<p>Our function computes <code>n</code> results for a row <code>i</code> in <code>d</code> into row <code>i</code> in <code>r</code>.
+We can make <code>i</code> redundant by chunking <code>d</code> into rows at the same time as <code>r</code>, zip the row iterators into pairs and apply <code>step_row</code> in parallel on all <code>(r_row, d_row)</code> pairs.
+Inside <code>step_row</code>, we loop over all columns <code>j</code> of <code>d</code>, i.e. all rows <code>j</code> of <code>t</code>.
+If we chunk up <code>t</code> into <code>n</code> rows of length <code>n</code> inside <code>step_row</code>, we can zip up that iterator with row <code>i</code> of <code>r</code> and we have made index <code>j</code> redundant.</p>
+<p>Finally, we wrap our <code>if-else</code> minimum into a function and put it into our toolbox:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline(always)]
+pub fn min(x: f32, y: f32) -&gt; f32 {
+    if x &lt; y { x } else { y }
+}
+</code></pre>
+<p>Here's the final version of <code>v1</code> version of <code>step_row</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row i in d (d_row) and all rows t (t_rows),
+    // compute n results into a row in r (r_row)
+    let step_row = |(r_row, d_row): (&amp;mut [f32], &amp;[f32])| {
+        let t_rows = t.chunks_exact(n);
+        for (res, t_row) in r_row.iter_mut().zip(t_rows) {
+            *res = d_row.iter()
+                        .zip(t_row)
+                        .fold(std::f32::INFINITY, |v, (&amp;x, &amp;y)| min(v, x + y));
+        }
+    };
+    // Partition r and d into slices, each containing a single row of r and d,
+    // and apply the function on the row pairs
+    r.par_chunks_mut(n)
+        .zip(d.par_chunks(n))
+        .for_each(step_row);
+</code></pre>
+<p>Compiler output and benchmark results are not changed.</p>
+<p>It's nice to see functional code that performs as well as a C++ program.
+However, as we start pushing the CPU towards its limits, we eventually have to trade away some &quot;functional prettiness&quot; for raw performance, e.g. by loop unrolling and using hard-coded amounts of variables.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="v0.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="v0.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

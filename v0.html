@@ -1,0 +1,357 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v0 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html" class="active">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#baseline" id="baseline">Baseline</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v0_baseline/src/lib.rs">Full source</a></p>
+<p>Our first version will be little more than three simple, nested <code>for</code>-loops.
+This serves as an initial starting point, on top of we will gradually add more complexity, which should greatly improve the performance of our program.</p>
+<h2><a class="header" href="#c-copy-paste" id="c-copy-paste">C++ copy-paste</a></h2>
+<p>Let's start by implementing the single-threaded version of the algorithm.
+Recall how in the previous chapter we defined the C interface function <code>step</code> that wraps input pointers into slices and passes those slices to a Rust function called <code>_step</code>.
+One low-effort approach to implement <code>_step</code> is converting the <a href="http://ppc.cs.aalto.fi/ch2/v0/">C++ reference solution</a> line by line into valid Rust syntax:</p>
+<pre><code class="language-rust no_run noplaypen">fn _step(r: &amp;mut [f32], d: &amp;[f32], n: usize) {
+    for i in 0..n {
+        for j in 0..n {
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d[n*i + k];
+                let y = d[n*k + j];
+                let z = x + y;
+                v = v.min(z);
+            }
+            r[n*i + j] = v;
+        }
+    }
+}
+
+</code></pre>
+<p>In addition to being very inefficient, this implementation has several Rust-specific problems that we will address in the upcoming chapters.
+But first, let's assume this really is our best idea so far and think about how to parallelize this.
+In the C++ reference solution, each iteration of the outermost <code>for</code>-loop is distributed into parallel threads by using a <code>#pragma omp parallel for</code> compile time macro from the <a href="https://www.openmp.org/wp-content/uploads/OpenMPRef-5.0-111802-web.pdf">OpenMP library</a>.
+We don't have such macros in Rust, and even if we would start implementing some kind of thread pool with standard library threads or use some ready-made data parallelism solution, our problem will always be variable <code>r</code>.
+Since mutable references cannot be aliased, only one mutable reference to <code>r</code> can ever exist, which makes our current idea inherently sequential and unusable.</p>
+<h2><a class="header" href="#borrowing" id="borrowing">Borrowing</a></h2>
+<p>Before continuing, let's talk a bit about reference <a href="https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#references-and-borrowing">borrowing</a>, which is a fundamental part of how Rust implements thread safety.
+When we pass <code>r</code> into <code>_step</code> from the extern wrapper function, we have to tell the compiler we are about to transfer a mutable reference <code>r</code> into the scope of <code>_step</code> from the scope of <code>step</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    _step(&amp;mut r, d, n as usize);
+</code></pre>
+<p>In Rust this is called a mutable borrow.
+Mutable borrows cannot be aliased, which means it is not possible to have more than one mutable reference to <code>r</code> within one scope at a time.
+Immutable borrows, on the other hand, may be aliased.
+Therefore, we can have an arbitrary amount of immutable references to slice <code>d</code> in concurrently executing threads, but it is <em>not</em> possible to do the same for slice <code>r</code>.
+While this effectively eliminates the possibility of data races already at compile time, we need to think a bit more about how to properly distribute the mutable data of <code>r</code> into concurrent threads.</p>
+<h2><a class="header" href="#a-parallelizable-approach" id="a-parallelizable-approach">A parallelizable approach</a></h2>
+<p>We will solve this problem by partitioning <code>r</code> into non-overlapping, mutable subslices, and give ownership of each subslice to the thread that will write its results into that particular piece of memory.
+To encapsulate one unit of work for one thread, we replace the outermost <code>for</code>-loop by a function which captures all immutable state, slice <code>d</code>, by reference from the enclosing scope, and accepts a single, mutable row of <code>r</code> as an argument:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row i and every column j in d,
+    // compute n results into r (r_row)
+    let step_row = |(i, r_row): (usize, &amp;mut [f32])| {
+        for (j, res) in r_row.iter_mut().enumerate() {
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d[n*i + k];
+                let y = d[n*k + j];
+                let z = x + y;
+                v = v.min(z);
+            }
+            *res = v;
+        }
+    };
+</code></pre>
+<p>Note how <code>res</code> will always be equal to <code>r[n*i + j]</code>.</p>
+<p>In order to use this function on the result slice <code>r</code>, we must first partition <code>r</code> into rows of length <code>n</code>.
+Rust slices have a builtin method <code>chunks_mut</code>, which will partition the slice into non-overlapping, mutable subslices of a given length.
+If we want to partition <code>r</code> into mutable rows, each containing <code>n</code> elements, we can get an iterator over such mutable, row chunks with:</p>
+<pre><code class="language-rust no_run noplaypen">    r.chunks_mut(n)
+</code></pre>
+<p>If we enumerate the iterator, we will get the original row indexes from <code>0</code> to <code>n-1</code>, and all that remains is to apply <code>step_row</code> on each <code>(index, row_chunk)</code> pair:</p>
+<pre><code class="language-rust no_run noplaypen">    r.chunks_mut(n)
+        .enumerate()
+        .for_each(step_row);
+</code></pre>
+<p>The reason why we took this approach is that by explicitly partitioning <code>r</code> into new, mutable subslices, the compiler can pass ownership of these subslices to other scopes, without affecting the validity of other subslices.
+This allows us e.g. to implement a thread pool that executes <code>step_row</code> on each <code>r_row</code> subslice in parallel.
+Fortunately, there's already a <a href="https://docs.rs/rayon/1.1.0/rayon/">crate</a> for that.
+All we have to do is to replace <code>chunks_mut</code> with its parallel counterpart <code>par_chunks_mut</code>, which creates concurrent threads that can be used to apply <code>step_row</code> to each row chunk in parallel, in a work-stealing manner, until all rows have been processed:</p>
+<pre><code class="language-rust no_run noplaypen">    r.par_chunks_mut(n)
+        .enumerate()
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>Let's run some benchmarks.
+We'll be using randomly generated input of size <code>n = 6000</code> and run the <code>step</code> function with 4 threads on 4 cores for a single iteration.
+We measure the total running time in seconds and instructions per cycle (IPC).
+<a href="./results.html#benchmark-parameters">Here</a> is a more detailed specification of the benchmark parameters and CPU.
+The <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v0_baseline/step.cpp">C++ reference implementation</a> will be compiled with Clang and GCC, so we'll be running 3 benchmarks in total.
+Here are the results:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v0</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">289</td><td align="left">0.39</td></tr>
+<tr><td align="left">C++ <code>v0</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">297</td><td align="left">0.28</td></tr>
+<tr><td align="left">Rust <code>v0</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">285</td><td align="left">0.78</td></tr>
+</tbody></table>
+<p>All <code>step</code> functions take almost 300 seconds to complete when <code>n = 6000</code>.
+There seems to be some differences in the amount of instructions executed at each cycle.
+To find answers, we need to take a look at what the compilers produced for the innermost loop of the <code>step</code> function.</p>
+<h2><a class="header" href="#assembly" id="assembly">Assembly</a></h2>
+<h3><a class="header" href="#gcc" id="gcc"><code>gcc</code></a></h3>
+<p>Minimal loop that corresponds to a <code>for</code> loop in the source code, iterating one element at a time.
+See <a href="http://ppc.cs.aalto.fi/ch2/v0asm">here</a> for a detailed explanation on how it relates to the C++ code.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovss xmm0,DWORD PTR [rdx+rax*1]
+    vaddss xmm0,xmm0,DWORD PTR [rcx+rax*1]
+    add    rax,0x4
+    vminss xmm1,xmm0,xmm1
+    cmp    rax,rsi
+    jne    LOOP
+
+</code></pre>
+<h3><a class="header" href="#clang" id="clang"><code>clang</code></a></h3>
+<p>Same as the <code>gcc</code> single element loop but it is unrolled for 4 iterations.
+Note how the loop register <code>r8</code> is incremented by 4 after each iteration, and that the memory addresses from where we are loading 32-bit values are offset by <code>r8*4</code> minus 12, 8, 4, and 0.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovss xmm2,DWORD PTR [rdi+r8*4-0xc]
+    vmovss xmm3,DWORD PTR [rdi+r8*4-0x8]
+    vaddss xmm2,xmm2,DWORD PTR [r15+r8*4-0xc]
+    vaddss xmm3,xmm3,DWORD PTR [r15+r8*4-0x8]
+    vminss xmm1,xmm2,xmm1
+    vminss xmm1,xmm3,xmm1
+    vmovss xmm2,DWORD PTR [rdi+r8*4-0x4]
+    vaddss xmm2,xmm2,DWORD PTR [r15+r8*4-0x4]
+    vminss xmm1,xmm2,xmm1
+    vmovss xmm2,DWORD PTR [rdi+r8*4]
+    vaddss xmm2,xmm2,DWORD PTR [r15+r8*4]
+    vminss xmm1,xmm2,xmm1
+    add    r8,0x4
+    cmp    rbp,r8
+    jne    LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<p>This looks like the <code>gcc</code> single element loop, but there is something extra going on.
+What we see here is array bounds checking before loading values from memory and a <code>NaN</code> check before updating the intermediate result (mutable variable <code>v</code> in the code).</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp         rsi,rdx
+    jae         137
+    cmp         rax,rdx
+    jae         146
+    mov         rdi,QWORD PTR [rbx]
+    vmovss      xmm2,DWORD PTR [rdi+rsi*4]
+    vaddss      xmm2,xmm2,DWORD PTR [rdi+rax*4]
+    vminss      xmm3,xmm2,xmm1
+    vcmpunordss xmm1,xmm1,xmm1
+    vblendvps   xmm1,xmm3,xmm2,xmm1
+    add         rax,r8
+    inc         rsi
+    dec         rbp
+    jne         LOOP
+
+</code></pre>
+<p>Let's look at it in smaller chunks.</p>
+<p>Here we do bounds checking for <code>rsi</code> and <code>rax</code>, jumping out of the loop and starting a <a href="https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html"><code>panic</code></a> in case they have reached the threshold specified in <code>rdx</code>.
+We can also see that <code>rdi</code> is loaded from memory at each iteration even though it stays constant in this loop.
+The register is used when loading two <code>f32</code> values from memory, so it is probably also related to bounds checking in some way.</p>
+<pre><code class="language-x86asm">    cmp         rsi,rdx
+    jae         137
+    cmp         rax,rdx
+    jae         146
+    mov         rdi,QWORD PTR [rbx]
+</code></pre>
+<p>Here is the useful stuff we want to do, load two <code>f32</code>s, add them, and update the current minimum.</p>
+<pre><code class="language-x86asm">    vmovss      xmm2,DWORD PTR [rdi+rsi*4]
+    vaddss      xmm2,xmm2,DWORD PTR [rdi+rax*4]
+    vminss      xmm3,xmm2,xmm1
+</code></pre>
+<p>However, instead of keeping the current minimum always in <code>xmm1</code>, the compiler uses a temporary register <code>xmm3</code> for checking that the computed value is not <code>NaN</code> before writing it into <code>xmm1</code>.
+It seems that <code>f32::min</code> enforces a <a href="https://github.com/rust-lang/rust/blob/eae3437dfe991621e8afdc82734f4a172d7ddf9b/src/libcore/intrinsics.rs#L1580"><code>NaN</code>-check</a> (<code>x &lt; y || y != y</code>) to comply with IEEE standards, which might be causing these extra instructions:</p>
+<pre><code class="language-x86asm">    vcmpunordss xmm1,xmm1,xmm1
+    vblendvps   xmm1,xmm3,xmm2,xmm1
+</code></pre>
+<p>The reason why these extra instructions did not affect the running time, despite leading to an increased amount of instructions per cycle, is probably because the CPU was sitting idle most of the time, waiting for memory accesses to complete.
+We are currently using a very poor memory access pattern by reading <code>d</code> column-wise.
+That's what we're going to fix in the next chapter.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="cpp_abi.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v1.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="cpp_abi.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v1.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

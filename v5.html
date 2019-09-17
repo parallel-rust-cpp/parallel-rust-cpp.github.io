@@ -1,0 +1,470 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v5 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html" class="active">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#more-register-reuse" id="more-register-reuse">More register reuse</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v5_more_register_reuse/src/lib.rs">Full source</a></p>
+<p>In this version, we will re-organize our SIMD-packed data in a way that allows us to do more arithmetic operations on the data after it has been loaded into the CPU registers.
+Recall how in the <a href="v4.html">previous implementation</a> we performed 6 loads of <code>f32x8</code> vectors and computed 9 <code>f32x8</code> vectors worth of results in the performance critical loop.
+Now, will perform 2 loads of <code>f32x8</code> vectors and compute 8 <code>f32x8</code> vectors worth of results.
+This time, each <code>f32x8</code> will contain 8 elements from 8 different rows instead of 8 elements from the same row.
+As usual, the columns of <code>vd</code> are the rows of <code>vt</code>.
+For each pair of <code>f32x8</code> vectors from <code>vd</code> and <code>vt</code>, we will compute results for 8 different rows and 8 different columns, which means we can write 64 unique <code>f32</code> results into <code>r</code> after each pass.</p>
+<p>The approach is explained in detail with nice visualizations in the <a href="http://ppc.cs.aalto.fi/ch2/v5/">reference materials</a>.</p>
+<h2><a class="header" href="#implementation" id="implementation">Implementation</a></h2>
+<p>We can keep most of the code from <a href="v4.html"><code>v4</code></a> as it is, but with some modifications.
+First, we need to pack our SIMD vectors into a different order.
+Fortunately, this is simply a matter of swapping some indexes.
+Let's start by allocating some space for <code>vd</code> and <code>vt</code>.
+Each row of <code>f32x8</code>s in <code>vd</code> corresponds to 8 rows of <code>d</code>, and each row of <code>f32x8</code>s in <code>vt</code> corresponds to 8 columns of <code>d</code>.</p>
+<pre><code class="language-rust no_run noplaypen">    let vecs_per_col = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+    // Like v4, but this time pack all elements of d into f32x8s vertically
+    let mut vd = std::vec![simd::f32x8_infty(); n * vecs_per_col];
+    let mut vt = std::vec![simd::f32x8_infty(); n * vecs_per_col];
+</code></pre>
+<p>The preprocessing will be very similar to <a href="v4.html"><code>v4</code></a>, but this time we pack 8 rows and 8 columns of <code>d</code> into <code>vd</code> and <code>vt</code>, vertically as <code>f32x8</code> vectors.</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for row i of vd and row i of vt,
+    // copy 8 rows of d into vd and 8 columns of d into vt
+    let pack_simd_row_block = |(i, (vd_row, vt_row)): (usize, (&amp;mut [f32x8], &amp;mut [f32x8]))| {
+        for (jv, (vx, vy)) in vd_row.iter_mut().zip(vt_row.iter_mut()).enumerate() {
+            let mut vx_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            let mut vy_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            for (b, (x, y)) in vx_tmp.iter_mut().zip(vy_tmp.iter_mut()).enumerate() {
+                let j = i * simd::f32x8_LENGTH + b;
+                if i &lt; n &amp;&amp; j &lt; n {
+                    *x = d[n * j + jv];
+                    *y = d[n * jv + j];
+                }
+            }
+            *vx = simd::from_slice(&amp;vx_tmp);
+            *vy = simd::from_slice(&amp;vy_tmp);
+        }
+    };
+    vd.par_chunks_mut(n)
+        .zip(vt.par_chunks_mut(n))
+        .enumerate()
+        .for_each(pack_simd_row_block);
+</code></pre>
+<p>Now all elements from <code>d</code> have been packed vertically into 8-row blocks.
+Next, we will perform the <code>step</code> computations on all row blocks, such that the smallest unit of work for a thread is to compute 8 rows worth of results into <code>r</code>.
+Before defining <code>step_row_block</code>, let's plan how we will divide the work into parallel threads.
+Since one row of <code>f32x8</code>s in <code>vd</code> represents 8 rows of <code>d</code>, we will chunk <code>r</code> into blocks of 8 rows and chunk <code>vd</code> into single rows.
+Then, we zip them up and apply <code>step_row_block</code> in parallel on all pairs:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in d, compute all results for 8 rows into r
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // ...
+    };
+    // Chunk up r into row blocks containing 8 rows, each containing n f32s,
+    // and chunk up vd into rows, each containing n f32x8s
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .zip(vd.par_chunks(n))
+        .for_each(step_row_block);
+</code></pre>
+<p>Now, for a 8-row block of <code>d</code> (<code>vd_row</code>), we need to compute <code>8n</code> results into <code>r</code> by iterating over all 8-column blocks of <code>d</code> (row <code>j</code> of <code>vt</code>).</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in d, compute all results for 8 rows into r
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // Chunk up vt into rows, each containing n f32x8 vectors,
+        // exactly as vd_row
+        for (j, vt_row) in vt.chunks_exact(n).enumerate() {
+            // Intermediate results for 8 rows
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            // ...
+</code></pre>
+<p>In the innermost loop, we loop over a pair of rows <code>vd_row</code> and <code>vt_row</code>.
+For each pair of <code>f32x8</code> vectors, we will compute 3 different permutations of the vector elements for <code>vd_row</code> and 1 permutation for <code>vt_row</code>.
+Then, combining all permuted <code>f32x8</code>s, we accumulate 64 unique results for 8 rows and 8 columns of <code>d</code>.
+We'll define a helper function <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs#L50"><code>simd::swap</code></a> for inserting intrinsic functions that permute the elements of a <code>f32x8</code>.</p>
+<pre><code class="language-rust no_run noplaypen">            // Iterate horizontally over both rows,
+            // permute elements of each `f32x8` to create 8 unique combinations,
+            // and compute 8 minimums from all combinations
+            for (&amp;d0, &amp;t0) in vd_row.iter().zip(vt_row) {
+                // Compute permutations of f32x8 elements
+                // 2 3 0 1 6 7 4 5
+                let d2 = simd::swap(d0, 2);
+                // 4 5 6 7 0 1 2 3
+                let d4 = simd::swap(d0, 4);
+                // 6 7 4 5 2 3 0 1
+                let d6 = simd::swap(d4, 2);
+                // 1 0 3 2 5 4 7 6
+                let t1 = simd::swap(t0, 1);
+                // Compute 8 independent, intermediate results for 8 rows
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+</code></pre>
+<p>When we are done with the loop, we need to take care when extracting results from the 8 intermediate <code>f32x8</code> results accumulated into <code>tmp</code> to make sure the indexes are mapped correctly back to <code>r</code>.
+Since <code>tmp</code> contains 8 rows of <code>f32x8</code> vectors, we need to extract 64 <code>f32</code>s into a 8-by-8 block in <code>r</code>.
+The tricky part is that we have to somehow undo all the permutations.</p>
+<p>Let's use a fixed, two-dimensional indexing pattern for writing <code>f32</code>s into a 8-by-8 block in <code>r_row_block</code> and figure out later how to read from the correct indexes in <code>tmp</code>.
+We chunk <code>r_row_block</code> into 8 rows of length <code>n</code> and enumerate the rows by <code>tmp_i</code>.
+Then we iterate over 8 elements starting at <code>j * 8</code> of each row <code>tmp_i</code> in <code>r_row_block</code> and enumerate them by <code>tmp_j</code>, where <code>j</code> is the index of <code>vt_row</code> in <code>vt</code>.
+Now we need to extract 64 <code>f32</code> results from <code>tmp</code> and write them to row <code>tmp_i</code> and column <code>tmp_j</code> in the sub-block of 64 <code>f32</code>s in <code>r_row_block</code>, while taking into account that the elements in <code>tmp</code> are permuted.</p>
+<p>Consider <a href="http://ppc.cs.aalto.fi/ch2/v5.png">this</a> figure, and the 8-by-8 block on the left which shows the indexes of all elements in <code>vv</code>, i.e. our <code>tmp</code>.
+Blue indexes on the left side of the plus sign equals <code>tmp_i</code> and orange indexes on the right side of the plus sign equals <code>tmp_j</code>.
+If we permute the elements of rows with odd indexes by <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs#L50"><code>simd::swap(v, 1)</code></a>, you can see that the <code>tmp_j</code> indexes will follow <code>0..8</code> on every row.
+More importantly, we can now retrieve the result for row <code>tmp_i</code> at column <code>tmp_j</code> from <code>tmp</code> at row <code>tmp_i XOR tmp_j</code> from element <code>tmp_j</code>.</p>
+<pre><code class="language-rust no_run noplaypen">            // Swap elements of f32x8s at odd indexes to enable a linear iteration
+            // pattern for index tmp_j when extracting elements
+            for i in (1..simd::f32x8_LENGTH).step_by(2) {
+                tmp[i] = simd::swap(tmp[i], 1);
+            }
+            // Set 8 final results (i.e. 64 f32 results in total)
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+</code></pre>
+<h2><a class="header" href="#full-step_row_block-implementation" id="full-step_row_block-implementation">Full <code>step_row_block</code> implementation</a></h2>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in d, compute all results for 8 rows into r
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // Chunk up vt into rows, each containing n f32x8 vectors,
+        // exactly as vd_row
+        for (j, vt_row) in vt.chunks_exact(n).enumerate() {
+            // Intermediate results for 8 rows
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            // Iterate horizontally over both rows,
+            // permute elements of each `f32x8` to create 8 unique combinations,
+            // and compute 8 minimums from all combinations
+            for (&amp;d0, &amp;t0) in vd_row.iter().zip(vt_row) {
+                // Compute permutations of f32x8 elements
+                // 2 3 0 1 6 7 4 5
+                let d2 = simd::swap(d0, 2);
+                // 4 5 6 7 0 1 2 3
+                let d4 = simd::swap(d0, 4);
+                // 6 7 4 5 2 3 0 1
+                let d6 = simd::swap(d4, 2);
+                // 1 0 3 2 5 4 7 6
+                let t1 = simd::swap(t0, 1);
+                // Compute 8 independent, intermediate results for 8 rows
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+            // Swap elements of f32x8s at odd indexes to enable a linear iteration
+            // pattern for index tmp_j when extracting elements
+            for i in (1..simd::f32x8_LENGTH).step_by(2) {
+                tmp[i] = simd::swap(tmp[i], 1);
+            }
+            // Set 8 final results (i.e. 64 f32 results in total)
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+        }
+    };
+    // Chunk up r into row blocks containing 8 rows, each containing n f32s,
+    // and chunk up vd into rows, each containing n f32x8s
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .zip(vd.par_chunks(n))
+        .for_each(step_row_block);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>Let's run benchmarks with the same settings as before: <code>n = 6000</code>, single iteration, four threads bound to four cores.
+C++ version available <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v5_more_register_reuse/step.cpp">here</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v5</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">2.4</td><td align="left">2.46</td></tr>
+<tr><td align="left">C++ <code>v5</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">2.6</td><td align="left">2.06</td></tr>
+<tr><td align="left">Rust <code>v5</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">2.5</td><td align="left">2.54</td></tr>
+</tbody></table>
+<p>The lower IPC for <code>clang</code> might be due to lower usage of CPUs (2.5 CPUs) than in other versions (3.5 CPUs).
+The reason for this is still unclear.</p>
+<h2><a class="header" href="#assembly" id="assembly">Assembly</a></h2>
+<p>All 3 compilers produced similar loops, which all load two <code>f32x8</code>s, perform 4 permutations, and compute 8 additions and 8 minimums.
+One notable difference is that <code>gcc</code> performs all permutations using 32-bit and 128-bit lanes, while both <code>clang</code> and <code>rustc</code> load one register as double-precision floats and do permutations using 32-bit and 64-bit lanes.</p>
+<h3><a class="header" href="#gcc" id="gcc"><code>gcc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps    ymm2,YMMWORD PTR [rdx+rax*1]
+    vmovaps    ymm3,YMMWORD PTR [rcx+rax*1]
+    add        rax,0x20
+    vpermilps  ymm0,ymm2,0xb1
+    vperm2f128 ymm13,ymm3,ymm3,0x1
+    vpermilps  ymm14,ymm3,0x4e
+    vaddps     ymm15,ymm3,ymm2
+    vaddps     ymm3,ymm3,ymm0
+    vpermilps  ymm1,ymm13,0x4e
+    vminps     ymm7,ymm7,ymm3
+    vaddps     ymm3,ymm2,ymm14
+    vaddps     ymm14,ymm0,ymm14
+    vminps     ymm9,ymm9,ymm15
+    vminps     ymm10,ymm10,ymm3
+    vaddps     ymm3,ymm2,ymm13
+    vaddps     ymm13,ymm0,ymm13
+    vaddps     ymm2,ymm2,ymm1
+    vaddps     ymm0,ymm0,ymm1
+    vminps     ymm6,ymm6,ymm14
+    vminps     ymm11,ymm11,ymm3
+    vminps     ymm5,ymm5,ymm13
+    vminps     ymm8,ymm8,ymm2
+    vminps     ymm4,ymm4,ymm0
+    cmp        rax,r12
+    jne        LOOP
+
+</code></pre>
+<h3><a class="header" href="#clang" id="clang"><code>clang</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovapd   ymm9,YMMWORD PTR [rax+rsi*1]
+    vmovaps   ymm10,YMMWORD PTR [rcx+rsi*1]
+    vpermpd   ymm11,ymm9,0x4e
+    vpermilpd ymm12,ymm9,0x5
+    vpermilpd ymm13,ymm11,0x5
+    vpermilps ymm14,ymm10,0xb1
+    vaddps    ymm15,ymm9,ymm10
+    vminps    ymm5,ymm5,ymm15
+    vaddps    ymm9,ymm9,ymm14
+    vminps    ymm4,ymm4,ymm9
+    vaddps    ymm9,ymm12,ymm10
+    vminps    ymm6,ymm6,ymm9
+    vaddps    ymm9,ymm12,ymm14
+    vminps    ymm3,ymm3,ymm9
+    vaddps    ymm9,ymm11,ymm10
+    vminps    ymm7,ymm7,ymm9
+    vaddps    ymm9,ymm11,ymm14
+    vminps    ymm2,ymm2,ymm9
+    vaddps    ymm9,ymm10,ymm13
+    vminps    ymm8,ymm8,ymm9
+    vaddps    ymm9,ymm13,ymm14
+    vminps    ymm1,ymm1,ymm9
+    add       rdi,0x1
+    add       rsi,0x20
+    cmp       rdi,r15
+    jl        LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    inc       rdx
+    vmovapd   ymm9,YMMWORD PTR [rcx+rax*1]
+    vmovaps   ymm10,YMMWORD PTR [r9+rax*1]
+    vpermilpd ymm11,ymm9,0x5
+    vpermpd   ymm12,ymm9,0x4e
+    vpermpd   ymm13,ymm9,0x1b
+    vpermilps ymm14,ymm10,0xb1
+    vaddps    ymm15,ymm9,ymm10
+    vminps    ymm8,ymm8,ymm15
+    vaddps    ymm9,ymm9,ymm14
+    vminps    ymm7,ymm7,ymm9
+    vaddps    ymm9,ymm11,ymm10
+    vminps    ymm6,ymm6,ymm9
+    vaddps    ymm9,ymm11,ymm14
+    vminps    ymm5,ymm5,ymm9
+    vaddps    ymm9,ymm12,ymm10
+    vminps    ymm4,ymm4,ymm9
+    vaddps    ymm9,ymm12,ymm14
+    vminps    ymm3,ymm3,ymm9
+    vaddps    ymm9,ymm10,ymm13
+    vminps    ymm2,ymm2,ymm9
+    vaddps    ymm9,ymm13,ymm14
+    vminps    ymm1,ymm1,ymm9
+    add       rax,0x20
+    cmp       rdx,rsi
+    jb        LOOP
+
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="v4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v6.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="v4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v6.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

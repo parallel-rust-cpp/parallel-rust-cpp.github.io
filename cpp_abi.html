@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Calling Rust functions from C++ - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html" class="active">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#calling-rust-functions-from-c" id="calling-rust-functions-from-c">Calling Rust functions from C++</a></h1>
+<p>Before we begin implementing our Rust versions of the <code>step</code> function, we need to create some kind of interface the C++ benchmark program can interact with.
+We'll be using the <a href="https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html#using-extern-functions-to-call-external-code">C-language foreign function interface</a> to define a small wrapper function through which the C++ code can pass data by raw pointers to the Rust-program.</p>
+<h2><a class="header" href="#c-interface" id="c-interface">C interface</a></h2>
+<p>Now, consider the following C++ declaration of the <code>step</code> function:</p>
+<pre><code class="language-cpp no_run noplaypen">extern &quot;C&quot; {
+    void step(float*, const float*, int);
+}
+</code></pre>
+<p>We would like to implement a Rust function with a matching signature and name, such that when we compile our implementation as a static library, the linker will happily use our Rust <code>step</code> function as if it was originally written in C or C++.
+Since Rust provides safer primitives built on raw pointers, we would prefer to use these primitives and avoid handling raw pointers where possible.
+Therefore, we implement the algorithm logic in a private Rust function called <code>_step</code>, which we'll define shortly,  and expose its functionality through a public, thin C wrapper:</p>
+<pre><code class="language-rust no_run noplaypen">#[no_mangle]
+pub extern &quot;C&quot; fn step(r_raw: *mut f32, d_raw: *const f32, n: i32) {
+    let d = unsafe { std::slice::from_raw_parts(d_raw, (n * n) as usize) };
+    let mut r = unsafe { std::slice::from_raw_parts_mut(r_raw, (n * n) as usize) };
+    _step(&amp;mut r, d, n as usize);
+}
+
+</code></pre>
+<p>Let's break that down.</p>
+<p>We use the compile-time <code>no_mangle</code> attribute to instruct the compiler to retain the symbol name of the function so that the linker can find it in the static library:</p>
+<pre><code class="language-rust no_run noplaypen">#[no_mangle]
+</code></pre>
+<p>We declare a Rust function called <code>step</code> with public visibility, using the C-language ABI, that accepts 3 arguments:</p>
+<pre><code class="language-rust no_run noplaypen">pub extern &quot;C&quot; fn step(r_raw: *mut f32, d_raw: *const f32, n: i32) {
+</code></pre>
+<p>The arguments are one mutable and one immutable raw pointer to single precision floating point numbers, and one <a href="https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout">32-bit integer</a>.
+We expect <code>r_raw</code> and <code>d_raw</code> to be non-null, aligned to the size of <code>f32</code> and initialized with <code>n * n</code> elements.
+Proper alignment will be <a href="https://doc.rust-lang.org/src/core/slice/mod.rs.html#5216">asserted at runtime</a> when we run all our implementations in debug mode, before doing the actual benchmarking.</p>
+<p>In order to dereference the raw pointers, we need to use <a href="https://doc.rust-lang.org/reference/unsafe-blocks.html"><code>unsafe</code></a> blocks to tell the Rust compiler we expect the pointers to always be valid.
+The compiler cannot know if the pointers are null, uninitialized or whether the underlying memory might even be deallocated by someone else, before the <code>step</code> call terminates.
+However, we know that none of these should be possible, since the parent program will properly initialize the data and block on the <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/main/main.cpp#L26"><code>step</code> call</a> before the vectors go out of scope and get destroyed along with the data.
+We can now rest assured that the given data will always be properly allocated and initialized.</p>
+<p>Preferably, we would let the Rust compiler take care of this kind of memory safety analysis for us, which we can do by wrapping the pointers into <a href="https://doc.rust-lang.org/std/primitive.slice.html">slices</a>.
+Slices are Rust primitive types which provide a dynamically-sized view into a block of memory, basically a pointer with a length.
+This plays a fundamental part in the array access bounds checks the compiler will be inserting every time it is unable to check index values at compile time.
+If the compiler can assert at compile time that no access can be out of bounds, e.g. if we are using an iterator to access all elements of the slice, the compiler will (should) elide all bounds checks.</p>
+<p>Now, back to converting the raw pointers into slices.</p>
+<p>First, we construct an immutable slice of length <code>n * n</code>, starting at the address pointed by <code>d_raw</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    let d = unsafe { std::slice::from_raw_parts(d_raw, (n * n) as usize) };
+</code></pre>
+<p>Then, we wrap <code>r_raw</code> also into a slice, but declare it mutable to allow writing into its memory block:</p>
+<pre><code class="language-rust no_run noplaypen">    let mut r = unsafe { std::slice::from_raw_parts_mut(r_raw, (n * n) as usize) };
+</code></pre>
+<p>Now we have two &quot;not-unsafe&quot; Rust primitive types that point to the same memory blocks as the pointers passed down by the C++ program calling our <code>step</code> function.
+We can proceed by calling the actual Rust implementation of the <code>step</code> algorithm:</p>
+<pre><code class="language-rust no_run noplaypen">    _step(&amp;mut r, d, n as usize);
+</code></pre>
+<p>The implementation of <code>_step</code> is what we will be heavily working on.
+We'll take a look at the first version in the next chapter.</p>
+<h2><a class="header" href="#c-does-not-know-how-to-panic" id="c-does-not-know-how-to-panic">C++ does not know how to panic</a></h2>
+<p>We are almost done, but need to take care of one more thing.
+Rust runtime exceptions are called <a href="https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html">panics</a>, and a common implementation is stack unwinding, which results in a stack trace.
+Letting a panic unwind across the ABI into foreign code is <a href="https://doc.rust-lang.org/1.37.0/std/panic/fn.catch_unwind.html"><strong>undefined behaviour</strong></a>, which we naturally want to avoid whenever possible.
+If an unwinding panic occurs during a call to <code>_step</code>, we try to catch the panic and instead print a small error message to the standard error stream, before we return control to the parent program:</p>
+<pre><code class="language-rust no_run noplaypen">    #[no_mangle]
+    pub extern &quot;C&quot; fn step(r_raw: *mut f32, d_raw: *const f32, n: i32) {
+        let result = std::panic::catch_unwind(|| {
+            let d = unsafe { std::slice::from_raw_parts(d_raw, (n * n) as usize) };
+            let mut r = unsafe { std::slice::from_raw_parts_mut(r_raw, (n * n) as usize) };
+            _step(&amp;mut r, d, n as usize);
+        });
+        if result.is_err() {
+            eprintln!(&quot;error: rust panicked&quot;);
+        }
+    }
+</code></pre>
+<p>The <code>|| { }</code> expression is Rust for an <a href="https://doc.rust-lang.org/stable/reference/types/closure.html#closure-types">anonymous function</a> that takes no arguments.</p>
+<p>Our Rust program now has a C interface that the C++ benchmark program can call.
+To avoid repetition, we wrap it into a Rust macro <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/lib.rs#L5-L25"><code>create_extern_c_wrapper</code></a>.
+To create a C interface named <code>step</code> that wraps a Rust implementation named <code>_step</code>, we simply evaluate the macro:</p>
+<pre><code class="language-rust no_run noplaypen">create_extern_c_wrapper!(step, _step);
+</code></pre>
+<p>Notice the exclamation mark, which is Rust syntax for evaluation compile-time macros.</p>
+<p>Catching a panic here is also important for debugging.
+During testing, we will compile all implementations using the <code>-C debug-assertions</code> flag, which enables <a href="https://doc.rust-lang.org/1.37.0/std/macro.debug_assert.html"><code>debug_assert</code></a> macros at runtime, even in optimized build.
+Specifically, this allows us e.g. to <a href="https://doc.rust-lang.org/src/core/slice/mod.rs.html#5216">check</a> that the given raw pointers are always properly aligned to <code>f32</code>, before we wrap then into Rust slices.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v0.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v0.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

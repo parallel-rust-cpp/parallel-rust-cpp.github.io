@@ -1,0 +1,331 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>v3 - Comparing parallel Rust and C++</title>
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html" class="active">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#simd" id="simd">SIMD</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v3_simd/src/lib.rs">Full source</a></p>
+<p>In this version we will be adding explicit <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> vector types and vector instructions to utilize CPU registers to their full width.
+As we saw in <a href="v2.html"><code>v2</code></a>, compilers are sometimes able to auto-vectorize simple loops.
+This time, however, we will not be hoping for auto-vectorization magic, but we'll write all vector instructions directly into the code.
+Since we only need a few simple instructions and are currently targeting only the <code>x86_64</code> platform, we won't be pulling in any external crates.
+Instead, we define our own, tiny <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs"><code>simd</code>-library</a> with safe Rust wrappers around a few <a href="https://software.intel.com/sites/landingpage/IntrinsicsGuide/#techs=AVX">Intel AVX intrinsics</a>.</p>
+<p>We'll be using the same approach as in the <a href="http://ppc.cs.aalto.fi/ch2/v3/">reference solution</a>, which is to pack all rows of <code>d</code> and <code>t</code> into 256-bit wide vectors (<code>f32x8</code>), each containing 8 single precision (<code>f32</code>) floats.
+First, we initialize initialize two <code>std::vec::Vec</code> containers for <code>d</code> and its transpose <code>t</code>.
+This time they will not contain <code>f32</code> values, but instead SIMD vectors of 8 <code>f32</code> elements:</p>
+<pre><code class="language-rust no_run noplaypen">    // How many f32x8 vectors we need for all elements from a row or column of d
+    let vecs_per_row = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+    // All rows and columns d packed into f32x8 vectors,
+    // each initially filled with 8 f32::INFINITYs
+    let mut vd = std::vec![simd::f32x8_infty(); n * vecs_per_row];
+    let mut vt = std::vec![simd::f32x8_infty(); n * vecs_per_row];
+    // Assert that all addresses of vd and vt are properly aligned to the size of f32x8
+    debug_assert!(vd.iter().all(simd::is_aligned));
+    debug_assert!(vt.iter().all(simd::is_aligned));
+</code></pre>
+<p>We shouldn't have to worry about proper memory alignment since <code>std::vec::Vec</code> <a href="https://doc.rust-lang.org/1.37.0/src/alloc/raw_vec.rs.html#90-91">by default</a> allocates its memory aligned to the size of the type of its elements.
+Just to make sure, though, we added some debug asserts that check the alignment of each address in <code>vd</code> and <code>vt</code> by using this helper:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline(always)]
+pub fn is_aligned(v: &amp;f32x8) -&gt; bool {
+    (v as *const f32x8).align_offset(std::mem::align_of::&lt;f32x8&gt;()) == 0
+}
+</code></pre>
+<p>Next, we will fill every row of <code>vd</code> and <code>vt</code> with <code>f32x8</code> vectors in parallel.
+Each thread will read one row of <code>d</code> into <code>vd</code> and one column of <code>d</code> into <code>vt</code> in chunks of 8 elements.
+We use two <code>f32</code> buffers of length 8, one for rows of <code>d</code> (<code>vx_tmp</code>) and one for columns of <code>d</code> (<code>vy_tmp</code>).
+Each time the buffers become full, they are converted into two <code>f32x8</code> vectors and pushed to <code>vd</code> and <code>vt</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for one row of f32x8 vectors in vd and one row of f32x8 vectors in vt,
+    // - copy all elements from row 'i' in d,
+    // - pack them into f32x8 vectors,
+    // - insert all into row 'i' of vd (vd_row)
+    // and
+    // - copy all elements from column 'i' in d,
+    // - pack them into f32x8 vectors,
+    // - insert all into row 'i' of vt (vt_row)
+    let pack_simd_row = |(i, (vd_row, vt_row)): (usize, (&amp;mut [f32x8], &amp;mut [f32x8]))| {
+        // For every SIMD vector at row 'i', column 'jv' in vt and vd
+        for (jv, (vx, vy)) in vd_row.iter_mut().zip(vt_row.iter_mut()).enumerate() {
+            // Temporary buffers for f32 elements of two f32x8s
+            let mut vx_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            let mut vy_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            // Iterate over 8 elements to fill the buffers
+            for (b, (x, y)) in vx_tmp.iter_mut().zip(vy_tmp.iter_mut()).enumerate() {
+                // Offset by 8 elements to get correct index mapping of j to d
+                let j = jv * simd::f32x8_LENGTH + b;
+                if i &lt; n &amp;&amp; j &lt; n {
+                    *x = d[n * i + j];
+                    *y = d[n * j + i];
+                }
+            }
+            // Initialize f32x8 vectors from buffer contents
+            // and assign them into the std::vec::Vec containers
+            *vx = simd::from_slice(&amp;vx_tmp);
+            *vy = simd::from_slice(&amp;vy_tmp);
+        }
+    };
+    // Fill rows of vd and vt in parallel one pair of rows at a time
+    vd.par_chunks_mut(vecs_per_row)
+        .zip(vt.par_chunks_mut(vecs_per_row))
+        .enumerate()
+        .for_each(pack_simd_row);
+</code></pre>
+<p>The nice thing is that the preprocessing we just did is by far the hardest part.
+Now all data is packed into SIMD vectors and we can use reuse <code>step_row</code> from <a href="v1.html"><code>v1</code></a> with minimal changes:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for a row of f32x8 elements from vd,
+    // compute a n f32 results into r
+    let step_row = |(r_row, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        let vt_rows = vt.chunks_exact(vecs_per_row);
+        for (res, vt_row) in r_row.iter_mut().zip(vt_rows) {
+            // Fold vd_row and vt_row into a single f32x8 result
+            let tmp = vd_row.iter()
+                            .zip(vt_row)
+                            .fold(simd::f32x8_infty(),
+                                  |v, (&amp;x, &amp;y)| simd::min(v, simd::add(x, y)));
+            // Reduce 8 different f32 results in tmp into the final result
+            *res = simd::horizontal_min(tmp);
+        }
+    };
+    r.par_chunks_mut(n)
+        .zip(vd.par_chunks(vecs_per_row))
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>Let's run benchmarks with the same settings as in <a href="v2.html"><code>v2</code></a>, comparing our Rust program to the reference <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v3_simd/step.cpp">C++ version</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v3</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">11.5</td><td align="left">1.31</td></tr>
+<tr><td align="left">C++ <code>v3</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">11.8</td><td align="left">1.37</td></tr>
+<tr><td align="left">Rust <code>v3</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">11.4</td><td align="left">1.04</td></tr>
+</tbody></table>
+<p>The running times are roughly the same, but the Rust program clearly does less instructions per cycle compared to the C++ program.
+Let's look at the disassembly to find out why.</p>
+<h3><a class="header" href="#gcc" id="gcc"><code>gcc</code></a></h3>
+<p>This is the single element loop from <a href="v0.html"><code>v0</code></a>, but with 256-bit SIMD instructions and registers.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm0,YMMWORD PTR [rcx+rax*1]
+    vaddps  ymm0,ymm0,YMMWORD PTR [rdx+rax*1]
+    add     rax,0x20
+    vminps  ymm1,ymm1,ymm0
+    cmp     rsi,rax
+    jne     LOOP
+
+</code></pre>
+<p>More detailed analysis is available <a href="http://ppc.cs.aalto.fi/ch2/v3asm">here</a>.</p>
+<h3><a class="header" href="#clang" id="clang"><code>clang</code></a></h3>
+<p>Like <code>gcc</code>, but for some reason there is a separate loop counter <code>r10</code>, instead of using <code>r9</code> both for loading values and checking if the loop has ended.
+The extra addition could explain the higher instructions per cycle value.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm2,YMMWORD PTR [r15+r9*1]
+    vaddps  ymm2,ymm2,YMMWORD PTR [r8+r9*1]
+    vminps  ymm1,ymm1,ymm2
+    add     r10,0x1
+    add     r9,0x20
+    cmp     r10,rdi
+    jl      LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<p>No bounds checking or extra instructions, except for a separate loop counter <code>r12</code>.
+The loop has also been unrolled for 4 iterations, which is why we might be seeing the reduction in IPC.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm3,YMMWORD PTR [rbx+rbp*1-0x60]
+    vmovaps ymm4,YMMWORD PTR [rbx+rbp*1-0x40]
+    vmovaps ymm5,YMMWORD PTR [rbx+rbp*1-0x20]
+    vmovaps ymm6,YMMWORD PTR [rbx+rbp*1]
+    vaddps  ymm3,ymm3,YMMWORD PTR [r11+rbp*1-0x60]
+    vminps  ymm2,ymm2,ymm3
+    vaddps  ymm3,ymm4,YMMWORD PTR [r11+rbp*1-0x40]
+    vminps  ymm2,ymm2,ymm3
+    vaddps  ymm3,ymm5,YMMWORD PTR [r11+rbp*1-0x20]
+    vminps  ymm2,ymm2,ymm3
+    add     r12,0x4
+    vaddps  ymm3,ymm6,YMMWORD PTR [r11+rbp*1]
+    vminps  ymm2,ymm2,ymm3
+    sub     rbp,0xffffffffffffff80
+    cmp     r13,r12
+    jne     LOOP
+
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="v2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="v4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="v2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="v4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

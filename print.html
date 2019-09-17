@@ -1,0 +1,2121 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Comparing parallel Rust and C++</title>
+        
+        <meta name="robots" content="noindex" />
+        
+
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="affix"><a href="introduction.html">Introduction</a></li><li class="affix"><a href="cpp_abi.html">Calling Rust functions from C++</a></li><li class="affix"><a href="v0.html">v0</a></li><li class="affix"><a href="v1.html">v1</a></li><li class="affix"><a href="v2.html">v2</a></li><li class="affix"><a href="v3.html">v3</a></li><li class="affix"><a href="v4.html">v4</a></li><li class="affix"><a href="v5.html">v5</a></li><li class="affix"><a href="v6.html">v6</a></li><li class="affix"><a href="v7.html">v7</a></li><li class="affix"><a href="results.html">Results</a></li><li class="affix"><a href="references.html">Additional reading</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Comparing parallel Rust and C++</h1>
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1><a class="header" href="#introduction" id="introduction">Introduction</a></h1>
+<p>In this tutorial, we will implement a Rust program that attempts to utilize 100% of the theoretical capacity of three relatively modern, mid-range CPUs.
+We'll use an existing, highly efficient <a href="http://ppc.cs.aalto.fi/ch2/">C++ implementation</a> as a reference point to compare how our Rust program is doing.
+We start with a simple baseline solution of 3 nested <code>for</code>-loops, and keep improving on the baseline solution incrementally, implementing 8 versions in total, until the program is going so fast it can hardly go faster.
+We'll approach the problem from the point of view of a C++ programmer who already knows how the reference implementation solves the problem, but is interested in an approach using the Rust language.</p>
+<p>Writing a program that pushes the CPU to its limits requires some understanding of the underlying hardware, which occasionally means reading the output of a compiler and using low-level intrinsics.
+I encourage you to also study the <a href="http://ppc.cs.aalto.fi/ch2/">reference implementation</a> materials, or at least keep them close by as we will be referencing to those materials quite often.
+The reference materials explain many important concepts very clearly, with intuitive visualizations that show why each incremental improvement makes the hardware execute the program faster.</p>
+<p>Note that most of the optimization tricks shown in this tutorial are merely Rust-adaptations of the original C++ solutions.
+Interestingly, this does not require as much <code>unsafe</code>-blocks as one would initially assume.
+As we will see in this tutorial, safe Rust can be just as fast as a highly optimized C++ program.</p>
+<h2><a class="header" href="#the-program" id="the-program">The program</a></h2>
+<p>The program we will implement and improve on, is an Θ(n³) algorithm for a graph problem, which is described in more detail <a href="http://ppc.cs.aalto.fi/ch2/">here</a> as the &quot;shortcut problem&quot;.
+All input will consist of square matrices containing <code>n</code> rows and columns of single precision floating point numbers.
+The reference implementations are all defined in functions called <code>step</code> and provide one baseline implementation with 7 incrementally improved versions of <code>step</code>.
+We will implement 8 different <code>step</code> functions in Rust, each aiming to reach the performance of its corresponding C++ implementation.</p>
+<p>It is important to note that we assume the algorithm we are using is the best available algorithm for this task.
+The algorithm will stay the same in <em>all</em> implementations, even though we will be heavily optimizing those implementations.
+In other words, the asymptotic time complexity will always remain at Θ(n³), but we will be doing everything we can to reduce the constant factors that affect the running time.</p>
+<h2><a class="header" href="#incremental-improvements" id="incremental-improvements">Incremental improvements</a></h2>
+<p>Here is a brief summary of all 8 versions of the <code>step</code> function that we will be implementing.
+All implementations will be compiled as static libraries that provide a function called <code>step</code>, with C-language linkage.
+Those static libraries will be linked to the <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/main/main.cpp">benchmarking program</a> that generates the data consisting of random floats and calls <code>step</code> with the generated data, while recording the amount of time spent executing the function.</p>
+<table><thead><tr><th align="left">Library</th><th align="center">Original</th><th align="center">C++</th><th align="center">Rust</th></tr></thead><tbody>
+<tr><td align="left"><code>v0_baseline</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v0/">v0</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v0_baseline/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v0_baseline/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v1_linear_reading</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v1/">v1</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v1_linear_reading/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v1_linear_reading/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v2_instr_level_parallelism</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v2/">v2</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v2_instr_level_parallelism/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v2_instr_level_parallelism/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v3_simd</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v3/">v3</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v3_simd/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v3_simd/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v4_register_reuse</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v4/">v4</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v4_register_reuse/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v4_register_reuse/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v5_more_register_reuse</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v5/">v5</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v5_more_register_reuse/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v5_more_register_reuse/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v6_prefetch</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v6/">v6</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v6_prefetch/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v6_prefetch/src/lib.rs">.rs</a></td></tr>
+<tr><td align="left"><code>v7_cache_reuse</code></td><td align="center"><a href="http://ppc.cs.aalto.fi/ch2/v7/">v7</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v7_cache_reuse/step.cpp">.cpp</a></td><td align="center"><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v7_cache_reuse/src/lib.rs">.rs</a></td></tr>
+</tbody></table>
+<h3><a class="header" href="#v0-baseline" id="v0-baseline">v0: Baseline</a></h3>
+<p>Simple solution with 3 nested for loops.</p>
+<h3><a class="header" href="#v1-linear-reading" id="v1-linear-reading">v1: Linear reading</a></h3>
+<p>Copy the input matrix and store its transpose in <a href="https://en.wikipedia.org/wiki/Row-_and_column-major_order">row-major order</a>, enabling a linear memory access pattern also for the columns of the input matrix.</p>
+<h3><a class="header" href="#v2-instruction-level-parallelism" id="v2-instruction-level-parallelism">v2: Instruction level parallelism</a></h3>
+<p>Break instruction dependency chains in the innermost loop, increasing instruction throughput due to <a href="https://en.wikipedia.org/wiki/Instruction-level_parallelism">instruction level parallelism</a>.</p>
+<h3><a class="header" href="#v3-simd" id="v3-simd">v3: SIMD</a></h3>
+<p>Pack all values of the input matrix, and its transpose, row-wise into SIMD vector types and use <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs">SIMD instructions</a> explicitly, reducing the total amount of required instructions.</p>
+<h3><a class="header" href="#v4-register-reuse" id="v4-register-reuse">v4: Register reuse</a></h3>
+<p>Read the input and its transpose in 3-row blocks of SIMD vectors and compute 9 results for each combination of vector pairs in the block, reducing the amount of required memory accesses.</p>
+<h3><a class="header" href="#v5-more-register-reuse" id="v5-more-register-reuse">v5: More register reuse</a></h3>
+<p>Reorder the input matrix and its transpose by packing the data into SIMD vectors vertically, instead of horizontally. Read the vertically ordered data row-wise in pairs of 2 vectors, create 4 different permutations from the SIMD vector elements and compute 8 results for each pair, further reducing the amount of required memory accesses.</p>
+<h3><a class="header" href="#v6-prefetch" id="v6-prefetch">v6: Prefetch</a></h3>
+<p>Add prefetch hint instructions to take advantage of vacant CPU execution ports that are reserved for integer operations (since we are mostly using floating point arithmetic).</p>
+<h3><a class="header" href="#v7-cache-reuse" id="v7-cache-reuse">v7: Cache reuse</a></h3>
+<p>Add a <a href="https://en.wikipedia.org/wiki/Z-order_curve">Z-order curve</a> memory access pattern and process input in multiple passes one vertical stripe at a time, slightly improving data locality from cache reuse.</p>
+<h2><a class="header" href="#compilation-infrastructure" id="compilation-infrastructure">Compilation infrastructure</a></h2>
+<p>Here's an approximate overview of the benchmark program and how everything is tied together.</p>
+<p><img src="img/benchmark-infrastructure.png" alt="Sketch of benchmark infrastructure" /></p>
+<h1><a class="header" href="#calling-rust-functions-from-c" id="calling-rust-functions-from-c">Calling Rust functions from C++</a></h1>
+<p>Before we begin implementing our Rust versions of the <code>step</code> function, we need to create some kind of interface the C++ benchmark program can interact with.
+We'll be using the <a href="https://doc.rust-lang.org/book/ch19-01-unsafe-rust.html#using-extern-functions-to-call-external-code">C-language foreign function interface</a> to define a small wrapper function through which the C++ code can pass data by raw pointers to the Rust-program.</p>
+<h2><a class="header" href="#c-interface" id="c-interface">C interface</a></h2>
+<p>Now, consider the following C++ declaration of the <code>step</code> function:</p>
+<pre><code class="language-cpp no_run noplaypen">extern &quot;C&quot; {
+    void step(float*, const float*, int);
+}
+</code></pre>
+<p>We would like to implement a Rust function with a matching signature and name, such that when we compile our implementation as a static library, the linker will happily use our Rust <code>step</code> function as if it was originally written in C or C++.
+Since Rust provides safer primitives built on raw pointers, we would prefer to use these primitives and avoid handling raw pointers where possible.
+Therefore, we implement the algorithm logic in a private Rust function called <code>_step</code>, which we'll define shortly,  and expose its functionality through a public, thin C wrapper:</p>
+<pre><code class="language-rust no_run noplaypen">#[no_mangle]
+pub extern &quot;C&quot; fn step(r_raw: *mut f32, d_raw: *const f32, n: i32) {
+    let d = unsafe { std::slice::from_raw_parts(d_raw, (n * n) as usize) };
+    let mut r = unsafe { std::slice::from_raw_parts_mut(r_raw, (n * n) as usize) };
+    _step(&amp;mut r, d, n as usize);
+}
+
+</code></pre>
+<p>Let's break that down.</p>
+<p>We use the compile-time <code>no_mangle</code> attribute to instruct the compiler to retain the symbol name of the function so that the linker can find it in the static library:</p>
+<pre><code class="language-rust no_run noplaypen">#[no_mangle]
+</code></pre>
+<p>We declare a Rust function called <code>step</code> with public visibility, using the C-language ABI, that accepts 3 arguments:</p>
+<pre><code class="language-rust no_run noplaypen">pub extern &quot;C&quot; fn step(r_raw: *mut f32, d_raw: *const f32, n: i32) {
+</code></pre>
+<p>The arguments are one mutable and one immutable raw pointer to single precision floating point numbers, and one <a href="https://doc.rust-lang.org/reference/type-layout.html#primitive-data-layout">32-bit integer</a>.
+We expect <code>r_raw</code> and <code>d_raw</code> to be non-null, aligned to the size of <code>f32</code> and initialized with <code>n * n</code> elements.
+Proper alignment will be <a href="https://doc.rust-lang.org/src/core/slice/mod.rs.html#5216">asserted at runtime</a> when we run all our implementations in debug mode, before doing the actual benchmarking.</p>
+<p>In order to dereference the raw pointers, we need to use <a href="https://doc.rust-lang.org/reference/unsafe-blocks.html"><code>unsafe</code></a> blocks to tell the Rust compiler we expect the pointers to always be valid.
+The compiler cannot know if the pointers are null, uninitialized or whether the underlying memory might even be deallocated by someone else, before the <code>step</code> call terminates.
+However, we know that none of these should be possible, since the parent program will properly initialize the data and block on the <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/main/main.cpp#L26"><code>step</code> call</a> before the vectors go out of scope and get destroyed along with the data.
+We can now rest assured that the given data will always be properly allocated and initialized.</p>
+<p>Preferably, we would let the Rust compiler take care of this kind of memory safety analysis for us, which we can do by wrapping the pointers into <a href="https://doc.rust-lang.org/std/primitive.slice.html">slices</a>.
+Slices are Rust primitive types which provide a dynamically-sized view into a block of memory, basically a pointer with a length.
+This plays a fundamental part in the array access bounds checks the compiler will be inserting every time it is unable to check index values at compile time.
+If the compiler can assert at compile time that no access can be out of bounds, e.g. if we are using an iterator to access all elements of the slice, the compiler will (should) elide all bounds checks.</p>
+<p>Now, back to converting the raw pointers into slices.</p>
+<p>First, we construct an immutable slice of length <code>n * n</code>, starting at the address pointed by <code>d_raw</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    let d = unsafe { std::slice::from_raw_parts(d_raw, (n * n) as usize) };
+</code></pre>
+<p>Then, we wrap <code>r_raw</code> also into a slice, but declare it mutable to allow writing into its memory block:</p>
+<pre><code class="language-rust no_run noplaypen">    let mut r = unsafe { std::slice::from_raw_parts_mut(r_raw, (n * n) as usize) };
+</code></pre>
+<p>Now we have two &quot;not-unsafe&quot; Rust primitive types that point to the same memory blocks as the pointers passed down by the C++ program calling our <code>step</code> function.
+We can proceed by calling the actual Rust implementation of the <code>step</code> algorithm:</p>
+<pre><code class="language-rust no_run noplaypen">    _step(&amp;mut r, d, n as usize);
+</code></pre>
+<p>The implementation of <code>_step</code> is what we will be heavily working on.
+We'll take a look at the first version in the next chapter.</p>
+<h2><a class="header" href="#c-does-not-know-how-to-panic" id="c-does-not-know-how-to-panic">C++ does not know how to panic</a></h2>
+<p>We are almost done, but need to take care of one more thing.
+Rust runtime exceptions are called <a href="https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html">panics</a>, and a common implementation is stack unwinding, which results in a stack trace.
+Letting a panic unwind across the ABI into foreign code is <a href="https://doc.rust-lang.org/1.37.0/std/panic/fn.catch_unwind.html"><strong>undefined behaviour</strong></a>, which we naturally want to avoid whenever possible.
+If an unwinding panic occurs during a call to <code>_step</code>, we try to catch the panic and instead print a small error message to the standard error stream, before we return control to the parent program:</p>
+<pre><code class="language-rust no_run noplaypen">    #[no_mangle]
+    pub extern &quot;C&quot; fn step(r_raw: *mut f32, d_raw: *const f32, n: i32) {
+        let result = std::panic::catch_unwind(|| {
+            let d = unsafe { std::slice::from_raw_parts(d_raw, (n * n) as usize) };
+            let mut r = unsafe { std::slice::from_raw_parts_mut(r_raw, (n * n) as usize) };
+            _step(&amp;mut r, d, n as usize);
+        });
+        if result.is_err() {
+            eprintln!(&quot;error: rust panicked&quot;);
+        }
+    }
+</code></pre>
+<p>The <code>|| { }</code> expression is Rust for an <a href="https://doc.rust-lang.org/stable/reference/types/closure.html#closure-types">anonymous function</a> that takes no arguments.</p>
+<p>Our Rust program now has a C interface that the C++ benchmark program can call.
+To avoid repetition, we wrap it into a Rust macro <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/lib.rs#L5-L25"><code>create_extern_c_wrapper</code></a>.
+To create a C interface named <code>step</code> that wraps a Rust implementation named <code>_step</code>, we simply evaluate the macro:</p>
+<pre><code class="language-rust no_run noplaypen">create_extern_c_wrapper!(step, _step);
+</code></pre>
+<p>Notice the exclamation mark, which is Rust syntax for evaluation compile-time macros.</p>
+<p>Catching a panic here is also important for debugging.
+During testing, we will compile all implementations using the <code>-C debug-assertions</code> flag, which enables <a href="https://doc.rust-lang.org/1.37.0/std/macro.debug_assert.html"><code>debug_assert</code></a> macros at runtime, even in optimized build.
+Specifically, this allows us e.g. to <a href="https://doc.rust-lang.org/src/core/slice/mod.rs.html#5216">check</a> that the given raw pointers are always properly aligned to <code>f32</code>, before we wrap then into Rust slices.</p>
+<h1><a class="header" href="#baseline" id="baseline">Baseline</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v0_baseline/src/lib.rs">Full source</a></p>
+<p>Our first version will be little more than three simple, nested <code>for</code>-loops.
+This serves as an initial starting point, on top of we will gradually add more complexity, which should greatly improve the performance of our program.</p>
+<h2><a class="header" href="#c-copy-paste" id="c-copy-paste">C++ copy-paste</a></h2>
+<p>Let's start by implementing the single-threaded version of the algorithm.
+Recall how in the previous chapter we defined the C interface function <code>step</code> that wraps input pointers into slices and passes those slices to a Rust function called <code>_step</code>.
+One low-effort approach to implement <code>_step</code> is converting the <a href="http://ppc.cs.aalto.fi/ch2/v0/">C++ reference solution</a> line by line into valid Rust syntax:</p>
+<pre><code class="language-rust no_run noplaypen">fn _step(r: &amp;mut [f32], d: &amp;[f32], n: usize) {
+    for i in 0..n {
+        for j in 0..n {
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d[n*i + k];
+                let y = d[n*k + j];
+                let z = x + y;
+                v = v.min(z);
+            }
+            r[n*i + j] = v;
+        }
+    }
+}
+
+</code></pre>
+<p>In addition to being very inefficient, this implementation has several Rust-specific problems that we will address in the upcoming chapters.
+But first, let's assume this really is our best idea so far and think about how to parallelize this.
+In the C++ reference solution, each iteration of the outermost <code>for</code>-loop is distributed into parallel threads by using a <code>#pragma omp parallel for</code> compile time macro from the <a href="https://www.openmp.org/wp-content/uploads/OpenMPRef-5.0-111802-web.pdf">OpenMP library</a>.
+We don't have such macros in Rust, and even if we would start implementing some kind of thread pool with standard library threads or use some ready-made data parallelism solution, our problem will always be variable <code>r</code>.
+Since mutable references cannot be aliased, only one mutable reference to <code>r</code> can ever exist, which makes our current idea inherently sequential and unusable.</p>
+<h2><a class="header" href="#borrowing" id="borrowing">Borrowing</a></h2>
+<p>Before continuing, let's talk a bit about reference <a href="https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html#references-and-borrowing">borrowing</a>, which is a fundamental part of how Rust implements thread safety.
+When we pass <code>r</code> into <code>_step</code> from the extern wrapper function, we have to tell the compiler we are about to transfer a mutable reference <code>r</code> into the scope of <code>_step</code> from the scope of <code>step</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    _step(&amp;mut r, d, n as usize);
+</code></pre>
+<p>In Rust this is called a mutable borrow.
+Mutable borrows cannot be aliased, which means it is not possible to have more than one mutable reference to <code>r</code> within one scope at a time.
+Immutable borrows, on the other hand, may be aliased.
+Therefore, we can have an arbitrary amount of immutable references to slice <code>d</code> in concurrently executing threads, but it is <em>not</em> possible to do the same for slice <code>r</code>.
+While this effectively eliminates the possibility of data races already at compile time, we need to think a bit more about how to properly distribute the mutable data of <code>r</code> into concurrent threads.</p>
+<h2><a class="header" href="#a-parallelizable-approach" id="a-parallelizable-approach">A parallelizable approach</a></h2>
+<p>We will solve this problem by partitioning <code>r</code> into non-overlapping, mutable subslices, and give ownership of each subslice to the thread that will write its results into that particular piece of memory.
+To encapsulate one unit of work for one thread, we replace the outermost <code>for</code>-loop by a function which captures all immutable state, slice <code>d</code>, by reference from the enclosing scope, and accepts a single, mutable row of <code>r</code> as an argument:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row i and every column j in d,
+    // compute n results into r (r_row)
+    let step_row = |(i, r_row): (usize, &amp;mut [f32])| {
+        for (j, res) in r_row.iter_mut().enumerate() {
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d[n*i + k];
+                let y = d[n*k + j];
+                let z = x + y;
+                v = v.min(z);
+            }
+            *res = v;
+        }
+    };
+</code></pre>
+<p>Note how <code>res</code> will always be equal to <code>r[n*i + j]</code>.</p>
+<p>In order to use this function on the result slice <code>r</code>, we must first partition <code>r</code> into rows of length <code>n</code>.
+Rust slices have a builtin method <code>chunks_mut</code>, which will partition the slice into non-overlapping, mutable subslices of a given length.
+If we want to partition <code>r</code> into mutable rows, each containing <code>n</code> elements, we can get an iterator over such mutable, row chunks with:</p>
+<pre><code class="language-rust no_run noplaypen">    r.chunks_mut(n)
+</code></pre>
+<p>If we enumerate the iterator, we will get the original row indexes from <code>0</code> to <code>n-1</code>, and all that remains is to apply <code>step_row</code> on each <code>(index, row_chunk)</code> pair:</p>
+<pre><code class="language-rust no_run noplaypen">    r.chunks_mut(n)
+        .enumerate()
+        .for_each(step_row);
+</code></pre>
+<p>The reason why we took this approach is that by explicitly partitioning <code>r</code> into new, mutable subslices, the compiler can pass ownership of these subslices to other scopes, without affecting the validity of other subslices.
+This allows us e.g. to implement a thread pool that executes <code>step_row</code> on each <code>r_row</code> subslice in parallel.
+Fortunately, there's already a <a href="https://docs.rs/rayon/1.1.0/rayon/">crate</a> for that.
+All we have to do is to replace <code>chunks_mut</code> with its parallel counterpart <code>par_chunks_mut</code>, which creates concurrent threads that can be used to apply <code>step_row</code> to each row chunk in parallel, in a work-stealing manner, until all rows have been processed:</p>
+<pre><code class="language-rust no_run noplaypen">    r.par_chunks_mut(n)
+        .enumerate()
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark" id="benchmark">Benchmark</a></h2>
+<p>Let's run some benchmarks.
+We'll be using randomly generated input of size <code>n = 6000</code> and run the <code>step</code> function with 4 threads on 4 cores for a single iteration.
+We measure the total running time in seconds and instructions per cycle (IPC).
+<a href="./results.html#benchmark-parameters">Here</a> is a more detailed specification of the benchmark parameters and CPU.
+The <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v0_baseline/step.cpp">C++ reference implementation</a> will be compiled with Clang and GCC, so we'll be running 3 benchmarks in total.
+Here are the results:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v0</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">289</td><td align="left">0.39</td></tr>
+<tr><td align="left">C++ <code>v0</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">297</td><td align="left">0.28</td></tr>
+<tr><td align="left">Rust <code>v0</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">285</td><td align="left">0.78</td></tr>
+</tbody></table>
+<p>All <code>step</code> functions take almost 300 seconds to complete when <code>n = 6000</code>.
+There seems to be some differences in the amount of instructions executed at each cycle.
+To find answers, we need to take a look at what the compilers produced for the innermost loop of the <code>step</code> function.</p>
+<h2><a class="header" href="#assembly" id="assembly">Assembly</a></h2>
+<h3><a class="header" href="#gcc" id="gcc"><code>gcc</code></a></h3>
+<p>Minimal loop that corresponds to a <code>for</code> loop in the source code, iterating one element at a time.
+See <a href="http://ppc.cs.aalto.fi/ch2/v0asm">here</a> for a detailed explanation on how it relates to the C++ code.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovss xmm0,DWORD PTR [rdx+rax*1]
+    vaddss xmm0,xmm0,DWORD PTR [rcx+rax*1]
+    add    rax,0x4
+    vminss xmm1,xmm0,xmm1
+    cmp    rax,rsi
+    jne    LOOP
+
+</code></pre>
+<h3><a class="header" href="#clang" id="clang"><code>clang</code></a></h3>
+<p>Same as the <code>gcc</code> single element loop but it is unrolled for 4 iterations.
+Note how the loop register <code>r8</code> is incremented by 4 after each iteration, and that the memory addresses from where we are loading 32-bit values are offset by <code>r8*4</code> minus 12, 8, 4, and 0.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovss xmm2,DWORD PTR [rdi+r8*4-0xc]
+    vmovss xmm3,DWORD PTR [rdi+r8*4-0x8]
+    vaddss xmm2,xmm2,DWORD PTR [r15+r8*4-0xc]
+    vaddss xmm3,xmm3,DWORD PTR [r15+r8*4-0x8]
+    vminss xmm1,xmm2,xmm1
+    vminss xmm1,xmm3,xmm1
+    vmovss xmm2,DWORD PTR [rdi+r8*4-0x4]
+    vaddss xmm2,xmm2,DWORD PTR [r15+r8*4-0x4]
+    vminss xmm1,xmm2,xmm1
+    vmovss xmm2,DWORD PTR [rdi+r8*4]
+    vaddss xmm2,xmm2,DWORD PTR [r15+r8*4]
+    vminss xmm1,xmm2,xmm1
+    add    r8,0x4
+    cmp    rbp,r8
+    jne    LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc" id="rustc"><code>rustc</code></a></h3>
+<p>This looks like the <code>gcc</code> single element loop, but there is something extra going on.
+What we see here is array bounds checking before loading values from memory and a <code>NaN</code> check before updating the intermediate result (mutable variable <code>v</code> in the code).</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp         rsi,rdx
+    jae         137
+    cmp         rax,rdx
+    jae         146
+    mov         rdi,QWORD PTR [rbx]
+    vmovss      xmm2,DWORD PTR [rdi+rsi*4]
+    vaddss      xmm2,xmm2,DWORD PTR [rdi+rax*4]
+    vminss      xmm3,xmm2,xmm1
+    vcmpunordss xmm1,xmm1,xmm1
+    vblendvps   xmm1,xmm3,xmm2,xmm1
+    add         rax,r8
+    inc         rsi
+    dec         rbp
+    jne         LOOP
+
+</code></pre>
+<p>Let's look at it in smaller chunks.</p>
+<p>Here we do bounds checking for <code>rsi</code> and <code>rax</code>, jumping out of the loop and starting a <a href="https://doc.rust-lang.org/book/ch09-01-unrecoverable-errors-with-panic.html"><code>panic</code></a> in case they have reached the threshold specified in <code>rdx</code>.
+We can also see that <code>rdi</code> is loaded from memory at each iteration even though it stays constant in this loop.
+The register is used when loading two <code>f32</code> values from memory, so it is probably also related to bounds checking in some way.</p>
+<pre><code class="language-x86asm">    cmp         rsi,rdx
+    jae         137
+    cmp         rax,rdx
+    jae         146
+    mov         rdi,QWORD PTR [rbx]
+</code></pre>
+<p>Here is the useful stuff we want to do, load two <code>f32</code>s, add them, and update the current minimum.</p>
+<pre><code class="language-x86asm">    vmovss      xmm2,DWORD PTR [rdi+rsi*4]
+    vaddss      xmm2,xmm2,DWORD PTR [rdi+rax*4]
+    vminss      xmm3,xmm2,xmm1
+</code></pre>
+<p>However, instead of keeping the current minimum always in <code>xmm1</code>, the compiler uses a temporary register <code>xmm3</code> for checking that the computed value is not <code>NaN</code> before writing it into <code>xmm1</code>.
+It seems that <code>f32::min</code> enforces a <a href="https://github.com/rust-lang/rust/blob/eae3437dfe991621e8afdc82734f4a172d7ddf9b/src/libcore/intrinsics.rs#L1580"><code>NaN</code>-check</a> (<code>x &lt; y || y != y</code>) to comply with IEEE standards, which might be causing these extra instructions:</p>
+<pre><code class="language-x86asm">    vcmpunordss xmm1,xmm1,xmm1
+    vblendvps   xmm1,xmm3,xmm2,xmm1
+</code></pre>
+<p>The reason why these extra instructions did not affect the running time, despite leading to an increased amount of instructions per cycle, is probably because the CPU was sitting idle most of the time, waiting for memory accesses to complete.
+We are currently using a very poor memory access pattern by reading <code>d</code> column-wise.
+That's what we're going to fix in the next chapter.</p>
+<h1><a class="header" href="#linear-reading" id="linear-reading">Linear reading</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v1_linear_reading/src/lib.rs">Full source</a></p>
+<p>To enable a linear memory access pattern, the <a href="http://ppc.cs.aalto.fi/ch2/v1/">reference solution</a> introduces a Θ(n²) preprocessing step that allocates additional space for storing the transpose of <code>d</code> in row-major order.
+This allows us to read the columns of <code>d</code> linearly, using fully packed cache lines on each read.</p>
+<p>The easiest way of allocating memory on the heap for contiguous elements is probably by creating a <a href="https://doc.rust-lang.org/1.37.0/std/vec/struct.Vec.html">vector</a>, which is a struct containing a pointer, size, and length.
+We use the <code>std::vec</code> compile-time macro to create a mutable vector of length <code>n * n</code>, with all elements initialized to the value <code>0.0</code>, and then fill it with the transpose of <code>d</code>.
+Note that there is no need to annotate the type of the vector, since <code>f32</code> is inferred from context:</p>
+<pre><code class="language-rust no_run noplaypen">    // Transpose of d
+    let mut t = std::vec![0.0; n * n];
+    // Function: for some column j in d,
+    // copy all elements of that column into row i in t (t_row)
+    let transpose_column = |(j, t_row): (usize, &amp;mut [f32])| {
+        for (i, x) in t_row.iter_mut().enumerate() {
+            *x = d[n*i + j];
+        }
+    };
+    // Copy all columns of d into rows of t in parallel
+    t.par_chunks_mut(n)
+        .enumerate()
+        .for_each(transpose_column);
+</code></pre>
+<p>Now all columns of <code>d</code> have been stored as rows in <code>t</code>, and all we have to do is to iterate over all row pair combinations of <code>d</code> and <code>t</code>.
+As previously, we partition <code>r</code> into <code>n</code> non-overlapping, mutable rows such that each thread is working on one row at a time:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row i in d and all rows t,
+    // compute n results into row i in r (r_row)
+    let step_row = |(i, r_row): (usize, &amp;mut [f32])| {
+        for (j, res) in r_row.iter_mut().enumerate() {
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d[n*i + k];
+                let y = t[n*j + k];
+                let z = x + y;
+                v = v.min(z);
+            }
+            *res = v;
+        }
+    };
+    // Partition r into rows containing n elements,
+    // and apply step_row on all rows in parallel
+    r.par_chunks_mut(n)
+        .enumerate()
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark-1" id="benchmark-1">Benchmark</a></h2>
+<p>We'll use the same settings as in <a href="v0.html"><code>v0</code></a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">114.6</td><td align="left">2.11</td></tr>
+</tbody></table>
+<p>The linear memory access pattern helps a lot here, compared to what we had in the previous version.
+However, the Rust program is struggling to keep up, executing twice the amount of instructions per cycle as the C++ program while being almost two times slower.
+In the previous chapter, we talked about array bounds checking and <code>NaN</code> checks not affecting the running time due to a bad memory access pattern.
+We fixed the memory access pattern but now the extra instructions are starting to slow us down.</p>
+<p>Let's look at the most recent output from <code>rustc</code> to see these extra instructions.
+This time, we skip <code>gcc</code> and <code>clang</code>, because they produced almost the same output as in <a href="v0.html"><code>v0</code></a>.</p>
+<h3><a class="header" href="#rustc-1" id="rustc-1"><code>rustc</code></a></h3>
+<p>Not much has changed from <a href="v0.html"><code>v0</code></a>, except that there is even more registers involved in doing bounds checking.</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp         rax,rdx
+    jae         13e
+    mov         rcx,QWORD PTR [rbx+0x10]
+    cmp         rcx,rsi
+    jbe         150
+    mov         rcx,QWORD PTR [rbx]
+    mov         r10,QWORD PTR [r15]
+    vmovss      xmm2,DWORD PTR [r10+rax*4]
+    vaddss      xmm2,xmm2,DWORD PTR [rcx+rsi*4]
+    vminss      xmm3,xmm2,xmm1
+    vcmpunordss xmm1,xmm1,xmm1
+    vblendvps   xmm1,xmm3,xmm2,xmm1
+    inc         rsi
+    inc         rax
+    dec         rdi
+    jne         LOOP
+
+</code></pre>
+<p>Running the Rust program benchmark with <a href="https://linux.die.net/man/1/perf-record"><code>perf-record</code></a> suggests that a significant amount of the running time is spent doing <code>NaN</code> checks with <code>vcmpunordss</code> and <code>vblendvps</code>.</p>
+<h3><a class="header" href="#dealing-with-the-nan-check" id="dealing-with-the-nan-check">Dealing with the <code>NaN</code> check</a></h3>
+<p>Let's remove the <code>NaN</code> checks by replacing <code>f32::min</code> in the inner loop by a simple <code>if-else</code> expression:</p>
+<pre><code class="language-rust no_run noplaypen">    for k in 0..n {
+        let x = d[n*i + k];
+        let y = t[n*j + k];
+        let z = x + y;
+        v = if v &lt; z { v } else { z };
+    }
+</code></pre>
+<p>Compiling and checking the output we see that the <code>NaN</code> checks are gone from our loop:</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp    rax,rdx
+    jae    133
+    mov    rcx,QWORD PTR [rbx+0x10]
+    cmp    rcx,rsi
+    jbe    145
+    mov    rcx,QWORD PTR [rbx]
+    mov    r10,QWORD PTR [r15]
+    vmovss xmm2,DWORD PTR [r10+rax*4]
+    vaddss xmm2,xmm2,DWORD PTR [rcx+rsi*4]
+    vminss xmm1,xmm1,xmm2
+    inc    rsi
+    inc    rax
+    dec    rdi
+    jne    LOOP
+
+</code></pre>
+<p>Benchmarking the Rust program shows that the running time also improved quite a lot:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">60.8</td><td align="left">3.43</td></tr>
+</tbody></table>
+<p>What about the array bounds checks?
+Our mid-range CPU seems to be handling them without any problems even in the most performance critical loop.
+However, the bounds checks are certainly not free, as we can see from the amount of IPC.
+The C++ implementation of <a href="v1.html"><code>v1</code></a> is a proof that it is possible to solve the problem with significantly less instructions.
+On other hand, we don't want to <a href="https://doc.rust-lang.org/1.37.0/std/primitive.slice.html#method.get_unchecked">remove the bounds checks</a> completely, since we'd prefer to use as little <code>unsafe</code> Rust as possible.</p>
+<h3><a class="header" href="#dealing-with-the-bounds-checks" id="dealing-with-the-bounds-checks">Dealing with the bounds checks</a></h3>
+<p>Our solution is similar to the preprocessing step of computing the transpose of <code>d</code>:
+We will perform a bit of extra work outside the loop to remove a lot of work from inside the loop.
+If we extract one row of <code>d</code> and one row of <code>t</code> as subslices before the inner loop starts, the compiler will have a chance to assert that the starting and ending index of the subslices are within the bounds of the slices we extract the subslices from:</p>
+<pre><code class="language-rust no_run noplaypen">    let step_row = |(i, r_row): (usize, &amp;mut [f32])| {
+        // Get a view of row i of d as a subslice
+        let d_row = &amp;d[n*i..n*(i+1)];
+        for (j, res) in r_row.iter_mut().enumerate() {
+            // Same for row j in t
+            let t_row = &amp;t[n*j..n*(j+1)];
+            let mut v = std::f32::INFINITY;
+            for k in 0..n {
+                let x = d_row[k];
+                let y = t_row[k];
+                let z = x + y;
+                v = if v &lt; z { v } else { z };
+            }
+            *res = v;
+        }
+    };
+</code></pre>
+<p>After compiling the program, we can see that the compiler still wants to check that <code>k</code> is in bounds.
+Since <code>rsi</code> is incremented by 1 after each iteration, and it is used to load two <code>f32</code>s, it is very likely equal to our <code>k</code>.</p>
+<pre><code class="language-x86asm">LOOP:
+    cmp    r10,rsi
+    je     194
+    vmovss xmm2,DWORD PTR [rdx+rsi*4]
+    vaddss xmm2,xmm2,DWORD PTR [rax+rsi*4]
+    inc    rsi
+    vminss xmm1,xmm1,xmm2
+    cmp    rcx,rsi
+    jne    LOOP
+
+</code></pre>
+<p>Benchmarks show that the amount of IPC reduced significantly:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">60.6</td><td align="left">2.02</td></tr>
+</tbody></table>
+<p>Let's get all bounds checking out of the loop.
+We are currently using <code>k</code> only for accessing every element of <code>d_row</code> and <code>t_row</code> between <code>0..n</code>, so we might as well use <a href="https://doc.rust-lang.org/1.37.0/std/primitive.slice.html#method.iter">iterators</a> over both subslices.
+If we zip them them together, there's no need for <code>k</code> anymore.</p>
+<pre><code class="language-rust no_run noplaypen">    for (&amp;x, &amp;y) in d_row.iter().zip(t_row.iter()) {
+        let z = x + y;
+        v = if v &lt; z { v } else { z };
+    }
+</code></pre>
+<p>After compiling the program, we can see that not only did the compiler remove the bounds checks but it also unrolled 8 iterations of the loop:</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovss xmm2,DWORD PTR [r9+r15*4-0x1c]
+    vmovss xmm3,DWORD PTR [r9+r15*4-0x18]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0x1c]
+    vminss xmm1,xmm1,xmm2
+    vaddss xmm2,xmm3,DWORD PTR [r13+r15*4-0x18]
+    vmovss xmm3,DWORD PTR [r9+r15*4-0x14]
+    vaddss xmm3,xmm3,DWORD PTR [r13+r15*4-0x14]
+    vminss xmm1,xmm1,xmm2
+    vminss xmm1,xmm1,xmm3
+    vmovss xmm2,DWORD PTR [r9+r15*4-0x10]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0x10]
+    vminss xmm1,xmm1,xmm2
+    vmovss xmm2,DWORD PTR [r9+r15*4-0xc]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0xc]
+    vmovss xmm3,DWORD PTR [r9+r15*4-0x8]
+    vaddss xmm3,xmm3,DWORD PTR [r13+r15*4-0x8]
+    vminss xmm1,xmm1,xmm2
+    vminss xmm1,xmm1,xmm3
+    vmovss xmm2,DWORD PTR [r9+r15*4-0x4]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4-0x4]
+    vminss xmm1,xmm1,xmm2
+    vmovss xmm2,DWORD PTR [r9+r15*4]
+    vaddss xmm2,xmm2,DWORD PTR [r13+r15*4+0x0]
+    add    r15,0x8
+    vminss xmm1,xmm1,xmm2
+    cmp    rax,r15
+    jne    LOOP
+
+</code></pre>
+<p>Recall how <code>clang</code> unrolled the loop in <code>v0</code> in an exactly similar way.
+Since our program is still memory bottlenecked, the unrolling does not affect the running time.
+However, it does reduce the total amount of IPC:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">60.5</td><td align="left">1.54</td></tr>
+<tr><td align="left">C++ <code>v1</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">60.5</td><td align="left">1.00</td></tr>
+<tr><td align="left">Rust <code>v1</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">60.6</td><td align="left">0.92</td></tr>
+</tbody></table>
+<p>The reason for this is that we have more instructions doing the useful stuff (e.g. loading memory <code>vmovss</code>, addition <code>vaddss</code>, and computing minimums <code>vminss</code>) than loop related instructions such as comparisons and jumps.
+Compare this to the <code>gcc</code> single element loop of <a href="v0.html"><code>v0</code></a>.</p>
+<h3><a class="header" href="#iter-all-the-things" id="iter-all-the-things"><code>iter</code> all the things</a></h3>
+<p>If we succeeded in eliminating <code>k</code> from the innermost loop by using iterators, can we remove all loop variables with iterators?
+We are using <code>chunks_mut</code> to divide <code>r</code> into rows of length <code>n</code>, so why not do something similar with <code>d</code> and <code>t</code> but with immutable chunks instead?</p>
+<p>Our function computes <code>n</code> results for a row <code>i</code> in <code>d</code> into row <code>i</code> in <code>r</code>.
+We can make <code>i</code> redundant by chunking <code>d</code> into rows at the same time as <code>r</code>, zip the row iterators into pairs and apply <code>step_row</code> in parallel on all <code>(r_row, d_row)</code> pairs.
+Inside <code>step_row</code>, we loop over all columns <code>j</code> of <code>d</code>, i.e. all rows <code>j</code> of <code>t</code>.
+If we chunk up <code>t</code> into <code>n</code> rows of length <code>n</code> inside <code>step_row</code>, we can zip up that iterator with row <code>i</code> of <code>r</code> and we have made index <code>j</code> redundant.</p>
+<p>Finally, we wrap our <code>if-else</code> minimum into a function and put it into our toolbox:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline(always)]
+pub fn min(x: f32, y: f32) -&gt; f32 {
+    if x &lt; y { x } else { y }
+}
+</code></pre>
+<p>Here's the final version of <code>v1</code> version of <code>step_row</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row i in d (d_row) and all rows t (t_rows),
+    // compute n results into a row in r (r_row)
+    let step_row = |(r_row, d_row): (&amp;mut [f32], &amp;[f32])| {
+        let t_rows = t.chunks_exact(n);
+        for (res, t_row) in r_row.iter_mut().zip(t_rows) {
+            *res = d_row.iter()
+                        .zip(t_row)
+                        .fold(std::f32::INFINITY, |v, (&amp;x, &amp;y)| min(v, x + y));
+        }
+    };
+    // Partition r and d into slices, each containing a single row of r and d,
+    // and apply the function on the row pairs
+    r.par_chunks_mut(n)
+        .zip(d.par_chunks(n))
+        .for_each(step_row);
+</code></pre>
+<p>Compiler output and benchmark results are not changed.</p>
+<p>It's nice to see functional code that performs as well as a C++ program.
+However, as we start pushing the CPU towards its limits, we eventually have to trade away some &quot;functional prettiness&quot; for raw performance, e.g. by loop unrolling and using hard-coded amounts of variables.</p>
+<h1><a class="header" href="#instruction-level-parallelism-ilp" id="instruction-level-parallelism-ilp">Instruction level parallelism (ILP)</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v2_instr_level_parallelism/src/lib.rs">Full source</a></p>
+<p>Our program does not take advantage of the fact that modern CPUs are <a href="https://en.wikipedia.org/wiki/Superscalar_processor">superscalar processors</a>, capable of executing several independent instructions simultaneously.
+The problem in our <a href="v1.html"><code>v1</code></a> implementation is that each step is dependent on the previous step, caused by this part:</p>
+<pre><code class="language-rust no_run noplaypen">    let z = x + y;
+    v = min(v, z);
+</code></pre>
+<p>We will solve this by using a simple idea from the <a href="http://ppc.cs.aalto.fi/ch2/v2/">reference solution</a>: accumulate results into 4 independent, intermediate results and merge them only after processing the whole row.</p>
+<p>Suppose we have some row of <code>d</code>, containing the elements <code>x0, x1, x2, x3, ..., xn</code>, and some column of <code>d</code> (i.e. row of <code>t</code>), containing the elements <code>y0, y1, y2, y3, ..., yn</code>.
+Then, we compute results for all rows by accumulating intermediate results into 4 variables <code>v0, v1, v2, v3</code> as follows:</p>
+<pre><code class="language-rust no_run noplaypen">    // iteration 1
+    v0 = min(v0, x0 + y0);
+    v1 = min(v1, x1 + y1);
+    v2 = min(v2, x2 + y2);
+    v3 = min(v3, x3 + y3);
+    // iteration 2
+    v0 = min(v0, x4 + y4);
+    v1 = min(v1, x5 + y5);
+    v2 = min(v2, x6 + y6);
+    v3 = min(v3, x7 + y7);
+    // iteration 3
+    v0 = min(v0, x8 + y8);
+    v1 = min(v1, x9 + y9);
+    v2 = min(v2, x10 + y10);
+    v3 = min(v3, x11 + y11);
+    // etc ...
+</code></pre>
+<p>This should allow the CPU to write results into 4 independent registers for each intermediate result.</p>
+<p>Before we can update the <code>step_row</code> function, we need to make sure the amount of elements on each row is always a multiple of 4 to keep the performance-critical loop free of messy, unnecessary branching.
+As previously, we transpose <code>d</code> to allow linear reading of its columns, but have to make sure the row length of the transpose is also divisible by 4.
+The preprocessing looks a bit more complicated, but is essentially the same as doing the transpose in <a href="v1.html"><code>v1</code></a>, except that we copy the values of <code>d</code> also into <code>vd</code>, which is padded with <code>std::f32::INFINITY</code> values to make its rows divisible by 4:</p>
+<pre><code class="language-rust no_run noplaypen">    const BLOCK_SIZE: usize = 4;
+    let blocks_per_row = (n + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    let n_padded = blocks_per_row * BLOCK_SIZE;
+    // d and transpose of d with extra room at the end of each row,
+    // both initially filled with f32::INFINITY
+    let mut vd = std::vec![std::f32::INFINITY; n_padded * n];
+    let mut vt = std::vec![std::f32::INFINITY; n_padded * n];
+    // Function: for one row of vd and vt,
+    // copy a row at 'i' of d into vd and column at 'i' of d into vt
+    let preprocess_row = |(i, (vd_row, vt_row)): (usize, (&amp;mut [f32], &amp;mut [f32]))| {
+        for (j, (x, y)) in vd_row.iter_mut().zip(vt_row.iter_mut()).enumerate() {
+            if i &lt; n &amp;&amp; j &lt; n {
+                *x = d[n*i + j];
+                *y = d[n*j + i];
+            }
+        }
+    };
+    // Partition vd and vt into rows, apply preprocessing in parallel for each row pair
+    vd.par_chunks_mut(n_padded)
+        .zip(vt.par_chunks_mut(n_padded))
+        .enumerate()
+        .for_each(preprocess_row);
+</code></pre>
+<p>Now <code>vd</code> contains the original <code>d</code> and <code>vt</code> contains the transpose of <code>d</code>, but both have been padded with extra columns to the right containing <code>f32::INFINITY</code>s to ensure the width of <code>vd</code> and <code>vt</code> is always divisible by 4.
+Then, we partition <code>r</code> and <code>vd</code> into row chunks, zip them into row chunk pairs and apply <code>step_row</code> in parallel for each row of <code>vd</code>, writing the results into its paired result row chunk.
+Each thread will compute results over all rows of <code>vt</code>.</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for some row in vd (vd_row) and all rows in vt (vt_rows),
+    // compute all results for a row in r (r_row), corresponding to the row index of vd_row.
+    let step_row = |(r_row, vd_row): (&amp;mut [f32], &amp;[f32])| {
+        let vt_rows = vt.chunks_exact(n_padded);
+        // Length of a zipped iterator is the length of the shorter iterator in the zip pair so this never exceeds n
+        for (res, vt_row) in r_row.iter_mut().zip(vt_rows) {
+            // Partition both rows into chunks of size 4
+            // (x0, x1, x2, x3), (x4, x5, x6, x7), ...
+            let vd_blocks = vd_row.chunks_exact(BLOCK_SIZE);
+            // (y0, y1, y2, y3), (y4, y5, y6, y7), ...
+            let vt_blocks = vt_row.chunks_exact(BLOCK_SIZE);
+            // Using an array here is bit more convenient than 4 different variables, e.g. v0, v1, v2, v3
+            let mut block = [std::f32::INFINITY; BLOCK_SIZE];
+            // Accumulate all results as in v1, but 4 elements at a time
+            for (vd_block, vt_block) in vd_blocks.zip(vt_blocks) {
+                for (b, (&amp;x, &amp;y)) in block.iter_mut().zip(vd_block.iter().zip(vt_block)) {
+                    *b = min(*b, x + y);
+                }
+            }
+            // Fold 4 intermediate values into a single minimum and assign to final result
+            *res = block.iter().fold(std::f32::INFINITY, |acc, &amp;x| min(acc, x));
+        }
+    };
+    r.par_chunks_mut(n)
+        .zip(vd.par_chunks(n_padded))
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark-2" id="benchmark-2">Benchmark</a></h2>
+<p>We'll now compare the Rust implementation to the reference <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v2_instr_level_parallelism/step.cpp">C++ version</a>, which will be compiled with both Clang and GCC.
+If we run the benchmark program for a single iteration with the same parameters as previously, we get:</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v2</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">20.8</td><td align="left">2.88</td></tr>
+<tr><td align="left">C++ <code>v2</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">44.6</td><td align="left">3.23</td></tr>
+<tr><td align="left">Rust <code>v2</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">17.0</td><td align="left">2.43</td></tr>
+</tbody></table>
+<p>Two interesting questions arise:</p>
+<ul>
+<li>Why is <code>rustc</code> outperforming <code>gcc</code>?</li>
+<li>What on earth is <code>clang</code> doing?</li>
+</ul>
+<p>Let's compare the disassembly of all 3 versions.</p>
+<h3><a class="header" href="#rustc-2" id="rustc-2"><code>rustc</code></a></h3>
+<p>I omitted a portion of code above <code>LOOP</code>, up until label <code>1f0</code> since <a href="https://linux.die.net/man/1/perf-record"><code>perf-record</code></a> placed most CPU cycles between <code>LOOP</code> and the <code>jb</code> instruction that jumps to <code>LOOP</code>.</p>
+<p>It looks like the compiler outsmarted us by ignoring our attempt of writing code that utilizes ILP and instead auto-vectorized our loop, which now does all the work with two 128-bit SIMD registers:</p>
+<pre><code class="language-x86asm">LOOP:
+    mov       rbp,r14
+    add       rbp,rbx
+    je        1f0 ; about 20 lines above LOOP
+    inc       rcx
+    vmovups   xmm3,XMMWORD PTR [r14+rbx*1]
+    vaddps    xmm3,xmm3,XMMWORD PTR [r10+rbx*1]
+    vpermilps xmm3,xmm3,0x1b
+    vminps    xmm2,xmm2,xmm3
+    add       rbx,0x10
+    cmp       rcx,rax
+    jb        LOOP
+
+</code></pre>
+<p>We'll be rewriting most of our code with 256-bit vector types and instructions in <a href="v3.html"><code>v3</code></a>, but let's take a look at what the compiler managed to generate here.</p>
+<p>We load 4 consecutive <code>f32</code> values from <code>vd_row</code> into a 128-bit vector register <code>xmm3</code>:</p>
+<pre><code class="language-x86asm">    vmovups   xmm3,XMMWORD PTR [r14+rbx*1]
+</code></pre>
+<p>Then we load 4 consecutive <code>f32</code> values from <code>vt_row</code>, add those to the 4 values in <code>xmm3</code> using a single SIMD add-instruction, and store the result in <code>xmm3</code>:</p>
+<pre><code class="language-x86asm">    vaddps    xmm3,xmm3,XMMWORD PTR [r10+rbx*1]
+</code></pre>
+<p>Using <code>vpermilps</code> with shuffle control <code>0x1b = 0b00_01_10_11</code> will reverse the order of 4 elements in <code>xmm3</code>, but I don't know why the compiler wants to use this here, especially inside the loop.
+However, we are going to use these kind of SIMD register permutations ourselves later in <a href="v5.html"><code>v5</code></a> to significantly lower the total amount of memory accesses.</p>
+<pre><code class="language-x86asm">    vpermilps xmm3,xmm3,0x1b
+</code></pre>
+<p>We use a single SIMD min-instruction for 4 <code>f32</code> result values in <code>xmm2</code> and 4 sums in <code>xmm3</code> we got from the previous step and store the result in <code>xmm2</code>:</p>
+<pre><code class="language-x86asm">    vminps    xmm2,xmm2,xmm3
+</code></pre>
+<p>We increment the loop variable by 16, which will jump over 4 <code>f32</code>s in the next loop, and start over:</p>
+<pre><code class="language-x86asm">    add       rbx,0x10
+    cmp       rcx,rax
+    jb        LOOP
+</code></pre>
+<h3><a class="header" href="#clang-1" id="clang-1"><code>clang</code></a></h3>
+<p>I did not try to figure out what happens here, but it looks like a failed auto-vectorization attempt:</p>
+<pre><code class="language-x86asm">LOOP:
+    ; other half with similar lines omitted
+    lea       edx,[rax+r14*1+0x2]
+    movsxd    rdx,edx
+    lea       esi,[r15+r14*1+0x2]
+    movsxd    rsi,esi
+    lea       edi,[rax+r14*1+0x3]
+    movsxd    rdi,edi
+    lea       ebx,[r15+r14*1+0x3]
+    movsxd    rbx,ebx
+    vmovss    xmm0,DWORD PTR [r8+rdi*4]
+    vinsertps xmm0,xmm0,DWORD PTR [r8+rdx*4],0x10
+    vmovss    xmm3,DWORD PTR [rbp+rbx*4+0x0]
+    vinsertps xmm3,xmm3,DWORD PTR [rbp+rsi*4+0x0],0x10
+    vaddps    xmm0,xmm0,xmm3
+    vpmovzxdq xmm3,xmm0
+    vcmpltps  xmm0,xmm0,xmm4
+    vunpcklps xmm0,xmm2,xmm0
+    vblendvpd xmm6,xmm6,xmm3,xmm0
+    vpermilps xmm7,xmm5,0xe8
+    vpermilps xmm4,xmm6,0xe8
+    add       r14d,0x4
+    add       rcx,0xffffffffffffffff
+    jne       LOOP
+
+</code></pre>
+<h3><a class="header" href="#gcc-1" id="gcc-1"><code>gcc</code></a></h3>
+<p>GCC did not auto-vectorize anything but produced a good example of ILP:</p>
+<pre><code class="language-x86asm">LOOP:
+    lea    rcx,[r10+rcx*4]
+    lea    r8,[r8+r9*1+0x10]
+    nop    WORD PTR cs:[rax+rax*1+0x0]
+    vmovss xmm0,DWORD PTR [rcx]
+    vaddss xmm0,xmm0,DWORD PTR [rax]
+    add    rax,0x10
+    add    rcx,0x10
+    vminss xmm1,xmm0,xmm1
+    vmovss xmm0,DWORD PTR [rcx-0xc]
+    vaddss xmm0,xmm0,DWORD PTR [rax-0xc]
+    vminss xmm4,xmm0,xmm4
+    vmovss xmm0,DWORD PTR [rcx-0x8]
+    vaddss xmm0,xmm0,DWORD PTR [rax-0x8]
+    vminss xmm3,xmm0,xmm3
+    vmovss xmm0,DWORD PTR [rcx-0x4]
+    vaddss xmm0,xmm0,DWORD PTR [rax-0x4]
+    vminss xmm2,xmm0,xmm2
+    cmp    r8,rax
+    jne    LOOP
+
+</code></pre>
+<p>This is what we were trying to achieve, to have 4 independent registers for updating the minimums.
+You can read more about it <a href="http://ppc.cs.aalto.fi/ch2/v2asm">here</a>.</p>
+<p>We are not going to twist our Rust code so we can get a good ILP example out of it, the auto-vectorization already produced code that was more efficient than the <code>gcc</code> ILP example above.
+However, this was just an example, and we'll be needing ILP extensively later in <a href="v4.html"><code>v4</code></a>.
+First, let's rewrite our code using SIMD instructions.</p>
+<h1><a class="header" href="#simd" id="simd">SIMD</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v3_simd/src/lib.rs">Full source</a></p>
+<p>In this version we will be adding explicit <a href="https://en.wikipedia.org/wiki/SIMD">SIMD</a> vector types and vector instructions to utilize CPU registers to their full width.
+As we saw in <a href="v2.html"><code>v2</code></a>, compilers are sometimes able to auto-vectorize simple loops.
+This time, however, we will not be hoping for auto-vectorization magic, but we'll write all vector instructions directly into the code.
+Since we only need a few simple instructions and are currently targeting only the <code>x86_64</code> platform, we won't be pulling in any external crates.
+Instead, we define our own, tiny <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs"><code>simd</code>-library</a> with safe Rust wrappers around a few <a href="https://software.intel.com/sites/landingpage/IntrinsicsGuide/#techs=AVX">Intel AVX intrinsics</a>.</p>
+<p>We'll be using the same approach as in the <a href="http://ppc.cs.aalto.fi/ch2/v3/">reference solution</a>, which is to pack all rows of <code>d</code> and <code>t</code> into 256-bit wide vectors (<code>f32x8</code>), each containing 8 single precision (<code>f32</code>) floats.
+First, we initialize initialize two <code>std::vec::Vec</code> containers for <code>d</code> and its transpose <code>t</code>.
+This time they will not contain <code>f32</code> values, but instead SIMD vectors of 8 <code>f32</code> elements:</p>
+<pre><code class="language-rust no_run noplaypen">    // How many f32x8 vectors we need for all elements from a row or column of d
+    let vecs_per_row = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+    // All rows and columns d packed into f32x8 vectors,
+    // each initially filled with 8 f32::INFINITYs
+    let mut vd = std::vec![simd::f32x8_infty(); n * vecs_per_row];
+    let mut vt = std::vec![simd::f32x8_infty(); n * vecs_per_row];
+    // Assert that all addresses of vd and vt are properly aligned to the size of f32x8
+    debug_assert!(vd.iter().all(simd::is_aligned));
+    debug_assert!(vt.iter().all(simd::is_aligned));
+</code></pre>
+<p>We shouldn't have to worry about proper memory alignment since <code>std::vec::Vec</code> <a href="https://doc.rust-lang.org/1.37.0/src/alloc/raw_vec.rs.html#90-91">by default</a> allocates its memory aligned to the size of the type of its elements.
+Just to make sure, though, we added some debug asserts that check the alignment of each address in <code>vd</code> and <code>vt</code> by using this helper:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline(always)]
+pub fn is_aligned(v: &amp;f32x8) -&gt; bool {
+    (v as *const f32x8).align_offset(std::mem::align_of::&lt;f32x8&gt;()) == 0
+}
+</code></pre>
+<p>Next, we will fill every row of <code>vd</code> and <code>vt</code> with <code>f32x8</code> vectors in parallel.
+Each thread will read one row of <code>d</code> into <code>vd</code> and one column of <code>d</code> into <code>vt</code> in chunks of 8 elements.
+We use two <code>f32</code> buffers of length 8, one for rows of <code>d</code> (<code>vx_tmp</code>) and one for columns of <code>d</code> (<code>vy_tmp</code>).
+Each time the buffers become full, they are converted into two <code>f32x8</code> vectors and pushed to <code>vd</code> and <code>vt</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for one row of f32x8 vectors in vd and one row of f32x8 vectors in vt,
+    // - copy all elements from row 'i' in d,
+    // - pack them into f32x8 vectors,
+    // - insert all into row 'i' of vd (vd_row)
+    // and
+    // - copy all elements from column 'i' in d,
+    // - pack them into f32x8 vectors,
+    // - insert all into row 'i' of vt (vt_row)
+    let pack_simd_row = |(i, (vd_row, vt_row)): (usize, (&amp;mut [f32x8], &amp;mut [f32x8]))| {
+        // For every SIMD vector at row 'i', column 'jv' in vt and vd
+        for (jv, (vx, vy)) in vd_row.iter_mut().zip(vt_row.iter_mut()).enumerate() {
+            // Temporary buffers for f32 elements of two f32x8s
+            let mut vx_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            let mut vy_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            // Iterate over 8 elements to fill the buffers
+            for (b, (x, y)) in vx_tmp.iter_mut().zip(vy_tmp.iter_mut()).enumerate() {
+                // Offset by 8 elements to get correct index mapping of j to d
+                let j = jv * simd::f32x8_LENGTH + b;
+                if i &lt; n &amp;&amp; j &lt; n {
+                    *x = d[n * i + j];
+                    *y = d[n * j + i];
+                }
+            }
+            // Initialize f32x8 vectors from buffer contents
+            // and assign them into the std::vec::Vec containers
+            *vx = simd::from_slice(&amp;vx_tmp);
+            *vy = simd::from_slice(&amp;vy_tmp);
+        }
+    };
+    // Fill rows of vd and vt in parallel one pair of rows at a time
+    vd.par_chunks_mut(vecs_per_row)
+        .zip(vt.par_chunks_mut(vecs_per_row))
+        .enumerate()
+        .for_each(pack_simd_row);
+</code></pre>
+<p>The nice thing is that the preprocessing we just did is by far the hardest part.
+Now all data is packed into SIMD vectors and we can use reuse <code>step_row</code> from <a href="v1.html"><code>v1</code></a> with minimal changes:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for a row of f32x8 elements from vd,
+    // compute a n f32 results into r
+    let step_row = |(r_row, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        let vt_rows = vt.chunks_exact(vecs_per_row);
+        for (res, vt_row) in r_row.iter_mut().zip(vt_rows) {
+            // Fold vd_row and vt_row into a single f32x8 result
+            let tmp = vd_row.iter()
+                            .zip(vt_row)
+                            .fold(simd::f32x8_infty(),
+                                  |v, (&amp;x, &amp;y)| simd::min(v, simd::add(x, y)));
+            // Reduce 8 different f32 results in tmp into the final result
+            *res = simd::horizontal_min(tmp);
+        }
+    };
+    r.par_chunks_mut(n)
+        .zip(vd.par_chunks(vecs_per_row))
+        .for_each(step_row);
+</code></pre>
+<h2><a class="header" href="#benchmark-3" id="benchmark-3">Benchmark</a></h2>
+<p>Let's run benchmarks with the same settings as in <a href="v2.html"><code>v2</code></a>, comparing our Rust program to the reference <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v3_simd/step.cpp">C++ version</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v3</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">11.5</td><td align="left">1.31</td></tr>
+<tr><td align="left">C++ <code>v3</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">11.8</td><td align="left">1.37</td></tr>
+<tr><td align="left">Rust <code>v3</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">11.4</td><td align="left">1.04</td></tr>
+</tbody></table>
+<p>The running times are roughly the same, but the Rust program clearly does less instructions per cycle compared to the C++ program.
+Let's look at the disassembly to find out why.</p>
+<h3><a class="header" href="#gcc-2" id="gcc-2"><code>gcc</code></a></h3>
+<p>This is the single element loop from <a href="v0.html"><code>v0</code></a>, but with 256-bit SIMD instructions and registers.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm0,YMMWORD PTR [rcx+rax*1]
+    vaddps  ymm0,ymm0,YMMWORD PTR [rdx+rax*1]
+    add     rax,0x20
+    vminps  ymm1,ymm1,ymm0
+    cmp     rsi,rax
+    jne     LOOP
+
+</code></pre>
+<p>More detailed analysis is available <a href="http://ppc.cs.aalto.fi/ch2/v3asm">here</a>.</p>
+<h3><a class="header" href="#clang-2" id="clang-2"><code>clang</code></a></h3>
+<p>Like <code>gcc</code>, but for some reason there is a separate loop counter <code>r10</code>, instead of using <code>r9</code> both for loading values and checking if the loop has ended.
+The extra addition could explain the higher instructions per cycle value.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm2,YMMWORD PTR [r15+r9*1]
+    vaddps  ymm2,ymm2,YMMWORD PTR [r8+r9*1]
+    vminps  ymm1,ymm1,ymm2
+    add     r10,0x1
+    add     r9,0x20
+    cmp     r10,rdi
+    jl      LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc-3" id="rustc-3"><code>rustc</code></a></h3>
+<p>No bounds checking or extra instructions, except for a separate loop counter <code>r12</code>.
+The loop has also been unrolled for 4 iterations, which is why we might be seeing the reduction in IPC.</p>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm3,YMMWORD PTR [rbx+rbp*1-0x60]
+    vmovaps ymm4,YMMWORD PTR [rbx+rbp*1-0x40]
+    vmovaps ymm5,YMMWORD PTR [rbx+rbp*1-0x20]
+    vmovaps ymm6,YMMWORD PTR [rbx+rbp*1]
+    vaddps  ymm3,ymm3,YMMWORD PTR [r11+rbp*1-0x60]
+    vminps  ymm2,ymm2,ymm3
+    vaddps  ymm3,ymm4,YMMWORD PTR [r11+rbp*1-0x40]
+    vminps  ymm2,ymm2,ymm3
+    vaddps  ymm3,ymm5,YMMWORD PTR [r11+rbp*1-0x20]
+    vminps  ymm2,ymm2,ymm3
+    add     r12,0x4
+    vaddps  ymm3,ymm6,YMMWORD PTR [r11+rbp*1]
+    vminps  ymm2,ymm2,ymm3
+    sub     rbp,0xffffffffffffff80
+    cmp     r13,r12
+    jne     LOOP
+
+</code></pre>
+<h1><a class="header" href="#register-reuse" id="register-reuse">Register reuse</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v4_register_reuse/src/lib.rs">Full source</a></p>
+<p>In this version we are really starting to speed things up.
+We will use a combination of ILP, SIMD, and loop unrolling to maximize CPU register usage in the hottest loop of the <code>step_row</code> function.
+The Intel CPUs we are targeting have 16 <a href="https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#Advanced_Vector_Extensions">AVX registers</a>, each 256 bits wide, which match one-to-one with the <code>f32x8</code> type we have been using.
+We'll use the same approach as in the <a href="http://ppc.cs.aalto.fi/ch2/v4/">reference implementation</a>, which is to load 6 <code>f32x8</code> vectors from memory at each iteration and compute 9 results by combining all pairs.</p>
+<p><a href="http://ppc.cs.aalto.fi/ch2/v4.png">Here</a> is a visualization that shows the big picture of what is happening.</p>
+<p>First, we will group all rows of <code>vd</code> and <code>vt</code> into blocks of 3 rows.
+Then, for every pair of 3-row blocks, we read 3+3 <code>f32x8</code>s and accumulate 9 different, intermediate <code>f32x8</code> results from the cartesian product of the vector pairs.
+Finally, we extract values from the results accumulated in 9 <code>f32x8</code>s and write them to <code>r</code> in correct order.
+The high-level idea is the same as in our other approaches: to do a bit of extra work outside the performance critical loop in order to do significantly less work inside the loop.</p>
+<h2><a class="header" href="#implementing-step_row_block" id="implementing-step_row_block">Implementing <code>step_row_block</code></a></h2>
+<p>Like in <a href="v2.html"><code>v2</code></a>, we need to add some padding to make the amount of rows divisible by 3.
+This time, however, we add the padding at the bottom of <code>vd</code> and <code>vt</code>, since the blocks are grouped vertically, by row.
+Preprocessing is almost exactly the same as in <a href="v3.html"><code>v3</code></a>, we pack all elements of <code>d</code> as <code>f32x8</code> vectors into <code>vd</code> and its transpose <code>vt</code>, except for the few extra rows at the bottom (unless the amount of rows is already divisible by 3):</p>
+<pre><code class="language-rust no_run noplaypen">    const BLOCK_HEIGHT: usize = 3;
+    let blocks_per_col = (n + BLOCK_HEIGHT - 1) / BLOCK_HEIGHT;
+    let vecs_per_row = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+    let padded_height = BLOCK_HEIGHT * blocks_per_col;
+    // Preprocess exactly as in v3_simd,
+    // but make sure the amount of rows is divisible by BLOCK_HEIGHT
+    let mut vd = std::vec![simd::f32x8_infty(); padded_height * vecs_per_row];
+    let mut vt = std::vec![simd::f32x8_infty(); padded_height * vecs_per_row];
+</code></pre>
+<p>Since we are processing rows in blocks of 3, it is probably easiest to also write results for 3 rows at a time.
+Then we can chunk <code>vd</code> and <code>r</code> into 3-row blocks, zip them up, apply <code>step_row_block</code> in parallel such that each thread writes results for one block of 3 rows from <code>vd</code> into 3 rows of <code>r</code>.
+Inside <code>step_row_block</code>, every thread will chunk <code>vt</code> into 3-row blocks, and computes results for every pair of <code>vt</code> row block <code>j</code> and <code>vd</code> row block <code>i</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: For a row block vd_row_block containing 3 rows of f32x8 vectors,
+    // compute results for all row combinations of vd_row_block and row blocks of vt
+    let step_row_block = |(i, (r_row_block, vd_row_block)): (usize, (&amp;mut [f32], &amp;[f32x8]))| {
+        // Chunk up vt into blocks exactly as vd
+        let vt_row_blocks = vt.chunks_exact(BLOCK_HEIGHT * vecs_per_row);
+        // Compute results for all combinations of row blocks from vd and vt
+        for (j, vt_row_block) in vt_row_blocks.enumerate() {
+</code></pre>
+<p>Then, for every pair of row blocks <code>vd_row_block</code> and <code>vt_row_block</code>, we iterate over their columns, computing all 9 combinations of 3 <code>f32x8</code> vectors from <code>vd_row_block</code> and 3 <code>f32x8</code> vectors from <code>vt_row_block</code>, and add the results to the 9 intermediate results.
+Before we go into the most performance-critical loop, we initialize 9 intermediate results to <code>f32x8</code> vectors (each containing 8 <code>f32::INFINITY</code>s), and extract all 6 rows from both row blocks:</p>
+<pre><code class="language-rust no_run noplaypen">            // Partial results for 9 f32x8 row pairs
+            // All as separate variables to encourage the compiler
+            // to keep these values in 9 registers for the duration of the loop
+            let mut tmp0 = simd::f32x8_infty();
+            let mut tmp1 = simd::f32x8_infty();
+            let mut tmp2 = simd::f32x8_infty();
+            let mut tmp3 = simd::f32x8_infty();
+            let mut tmp4 = simd::f32x8_infty();
+            let mut tmp5 = simd::f32x8_infty();
+            let mut tmp6 = simd::f32x8_infty();
+            let mut tmp7 = simd::f32x8_infty();
+            let mut tmp8 = simd::f32x8_infty();
+            // Extract all rows from the row blocks
+            let mut vd_rows = vd_row_block.chunks_exact(vecs_per_row);
+            let mut vt_rows = vt_row_block.chunks_exact(vecs_per_row);
+            let (vd_row_0, vd_row_1, vd_row_2) = vd_rows.next_tuple().unwrap();
+            let (vt_row_0, vt_row_1, vt_row_2) = vt_rows.next_tuple().unwrap();
+</code></pre>
+<p>The reason we are not using a <code>tmp</code> array of 9 values is that the compiler was not keeping those 9 values in registers for the duration of the loop.</p>
+<p>Now everything is set up for iterating column-wise, computing the usual &quot;addition + minimum&quot; between every element in <code>vt</code> and <code>vd</code>.
+This time, we will load 6 <code>f32x8</code> vectors at each iteration, and compute 9 results in total.
+We'll use the <a href="https://docs.rs/itertools/0.8.0/itertools/macro.izip.html"><code>izip</code>-macro</a> from the <code>itertools</code> crate to get a nice, flattened tuple of row elements at each iteration:</p>
+<pre><code class="language-rust no_run noplaypen">            // Move horizontally, computing 3 x 3 results for each column
+            // At each iteration, load two 'vertical stripes' of 3 f32x8 vectors
+            let rows = izip!(vd_row_0, vd_row_1, vd_row_2, vt_row_0, vt_row_1, vt_row_2);
+            for (&amp;d0, &amp;d1, &amp;d2, &amp;t0, &amp;t1, &amp;t2) in rows {
+                // Combine all 9 pairs of f32x8 vectors from 6 rows at every column
+                tmp0 = simd::min(tmp0, simd::add(d0, t0));
+                tmp1 = simd::min(tmp1, simd::add(d0, t1));
+                tmp2 = simd::min(tmp2, simd::add(d0, t2));
+                tmp3 = simd::min(tmp3, simd::add(d1, t0));
+                tmp4 = simd::min(tmp4, simd::add(d1, t1));
+                tmp5 = simd::min(tmp5, simd::add(d1, t2));
+                tmp6 = simd::min(tmp6, simd::add(d2, t0));
+                tmp7 = simd::min(tmp7, simd::add(d2, t1));
+                tmp8 = simd::min(tmp8, simd::add(d2, t2));
+            }
+</code></pre>
+<p>After we have iterated over all columns, we offset the block row indexes <code>i</code> and <code>j</code> so that we get a proper index mapping to the indexes of <code>r</code>, extract final results from all 9 intermediate results, and finally write them to <code>r</code>:</p>
+<pre><code class="language-rust no_run noplaypen">            let tmp = [tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8];
+            // Set 9 final results for all combinations of 3 rows starting at i and 3 rows starting at j
+            for (block_i, (r_row, tmp_row)) in r_row_block.chunks_exact_mut(n).zip(tmp.chunks_exact(BLOCK_HEIGHT)).enumerate() {
+                for (block_j, &amp;tmp_res) in tmp_row.iter().enumerate() {
+                    let res_i = i * BLOCK_HEIGHT + block_i;
+                    let res_j = j * BLOCK_HEIGHT + block_j;
+                    if res_i &lt; n &amp;&amp; res_j &lt; n {
+                        // Reduce one f32x8 to the final result for one pair of rows
+                        r_row[res_j] = simd::horizontal_min(tmp_res);
+                    }
+                }
+            }
+</code></pre>
+<h2><a class="header" href="#full-step_row_block-implementation" id="full-step_row_block-implementation">Full <code>step_row_block</code> implementation</a></h2>
+<pre><code class="language-rust no_run noplaypen">    // Function: For a row block vd_row_block containing 3 rows of f32x8 vectors,
+    // compute results for all row combinations of vd_row_block and row blocks of vt
+    let step_row_block = |(i, (r_row_block, vd_row_block)): (usize, (&amp;mut [f32], &amp;[f32x8]))| {
+        // Chunk up vt into blocks exactly as vd
+        let vt_row_blocks = vt.chunks_exact(BLOCK_HEIGHT * vecs_per_row);
+        // Compute results for all combinations of row blocks from vd and vt
+        for (j, vt_row_block) in vt_row_blocks.enumerate() {
+            // Partial results for 9 f32x8 row pairs
+            // All as separate variables to encourage the compiler
+            // to keep these values in 9 registers for the duration of the loop
+            let mut tmp0 = simd::f32x8_infty();
+            let mut tmp1 = simd::f32x8_infty();
+            let mut tmp2 = simd::f32x8_infty();
+            let mut tmp3 = simd::f32x8_infty();
+            let mut tmp4 = simd::f32x8_infty();
+            let mut tmp5 = simd::f32x8_infty();
+            let mut tmp6 = simd::f32x8_infty();
+            let mut tmp7 = simd::f32x8_infty();
+            let mut tmp8 = simd::f32x8_infty();
+            // Extract all rows from the row blocks
+            let mut vd_rows = vd_row_block.chunks_exact(vecs_per_row);
+            let mut vt_rows = vt_row_block.chunks_exact(vecs_per_row);
+            let (vd_row_0, vd_row_1, vd_row_2) = vd_rows.next_tuple().unwrap();
+            let (vt_row_0, vt_row_1, vt_row_2) = vt_rows.next_tuple().unwrap();
+            // Move horizontally, computing 3 x 3 results for each column
+            // At each iteration, load two 'vertical stripes' of 3 f32x8 vectors
+            let rows = izip!(vd_row_0, vd_row_1, vd_row_2, vt_row_0, vt_row_1, vt_row_2);
+            for (&amp;d0, &amp;d1, &amp;d2, &amp;t0, &amp;t1, &amp;t2) in rows {
+                // Combine all 9 pairs of f32x8 vectors from 6 rows at every column
+                tmp0 = simd::min(tmp0, simd::add(d0, t0));
+                tmp1 = simd::min(tmp1, simd::add(d0, t1));
+                tmp2 = simd::min(tmp2, simd::add(d0, t2));
+                tmp3 = simd::min(tmp3, simd::add(d1, t0));
+                tmp4 = simd::min(tmp4, simd::add(d1, t1));
+                tmp5 = simd::min(tmp5, simd::add(d1, t2));
+                tmp6 = simd::min(tmp6, simd::add(d2, t0));
+                tmp7 = simd::min(tmp7, simd::add(d2, t1));
+                tmp8 = simd::min(tmp8, simd::add(d2, t2));
+            }
+            let tmp = [tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8];
+            // Set 9 final results for all combinations of 3 rows starting at i and 3 rows starting at j
+            for (block_i, (r_row, tmp_row)) in r_row_block.chunks_exact_mut(n).zip(tmp.chunks_exact(BLOCK_HEIGHT)).enumerate() {
+                for (block_j, &amp;tmp_res) in tmp_row.iter().enumerate() {
+                    let res_i = i * BLOCK_HEIGHT + block_i;
+                    let res_j = j * BLOCK_HEIGHT + block_j;
+                    if res_i &lt; n &amp;&amp; res_j &lt; n {
+                        // Reduce one f32x8 to the final result for one pair of rows
+                        r_row[res_j] = simd::horizontal_min(tmp_res);
+                    }
+                }
+            }
+        }
+    };
+    r.par_chunks_mut(BLOCK_HEIGHT * n)
+        .zip(vd.par_chunks(BLOCK_HEIGHT * vecs_per_row))
+        .enumerate()
+        .for_each(step_row_block);
+</code></pre>
+<h2><a class="header" href="#benchmark-4" id="benchmark-4">Benchmark</a></h2>
+<p>Let's run benchmarks with the same settings as before: <code>n = 6000</code>, single iteration, four threads bound to four cores.
+C++ version available <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v4_register_reuse/step.cpp">here</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v4</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">4.2</td><td align="left">2.26</td></tr>
+<tr><td align="left">C++ <code>v4</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">3.7</td><td align="left">1.92</td></tr>
+<tr><td align="left">Rust <code>v4</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">3.6</td><td align="left">1.98</td></tr>
+</tbody></table>
+<h3><a class="header" href="#gcc-3" id="gcc-3"><code>gcc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm2,YMMWORD PTR [rdx]
+    vmovaps ymm14,YMMWORD PTR [rax]
+    lea     rcx,[rdx+r8*1]
+    add     rdx,0x20
+    vmovaps ymm1,YMMWORD PTR [rcx+r11*1]
+    vmovaps ymm0,YMMWORD PTR [rcx+rdi*1]
+    lea     rcx,[rbx+rax*1]
+    add     rax,0x20
+    vaddps  ymm15,ymm2,ymm14
+    vmovaps ymm3,YMMWORD PTR [rcx+r15*1]
+    vmovaps ymm13,YMMWORD PTR [rcx+r14*1]
+    vminps  ymm4,ymm4,ymm15
+    vaddps  ymm15,ymm1,ymm14
+    vaddps  ymm14,ymm0,ymm14
+    vminps  ymm5,ymm5,ymm15
+    vmovaps YMMWORD PTR [rbp-0x170],ymm4
+    vminps  ymm6,ymm6,ymm14
+    vaddps  ymm14,ymm2,ymm3
+    vaddps  ymm2,ymm2,ymm13
+    vmovaps YMMWORD PTR [rbp-0x150],ymm5
+    vminps  ymm7,ymm7,ymm14
+    vaddps  ymm14,ymm1,ymm3
+    vmovaps YMMWORD PTR [rbp-0x130],ymm6
+    vaddps  ymm3,ymm0,ymm3
+    vaddps  ymm1,ymm1,ymm13
+    vaddps  ymm0,ymm0,ymm13
+    vminps  ymm10,ymm10,ymm2
+    vminps  ymm8,ymm8,ymm14
+    vmovaps YMMWORD PTR [rbp-0x110],ymm7
+    vminps  ymm9,ymm9,ymm3
+    vminps  ymm11,ymm11,ymm1
+    vminps  ymm12,ymm12,ymm0
+    vmovaps YMMWORD PTR [rbp-0xb0],ymm10
+    vmovaps YMMWORD PTR [rbp-0xf0],ymm8
+    vmovaps YMMWORD PTR [rbp-0xd0],ymm9
+    vmovaps YMMWORD PTR [rbp-0x90],ymm11
+    vmovaps YMMWORD PTR [rbp-0x70],ymm12
+    cmp     rax,rsi
+    jne     LOOP
+
+</code></pre>
+<p>We see the expected output of 6 memory loads and 9+9 arithmetic instructions, but also quite a lot of register spilling in the middle and end of the loop.</p>
+<p>It is unclear why the compiler decided to write intermediate results into memory already inside the loop, instead of keeping them in registers and doing the writing after the loop.
+When compiling with <code>gcc 9.1.0</code>, these problems disappear.</p>
+<h3><a class="header" href="#clang-3" id="clang-3"><code>clang</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm10,YMMWORD PTR [rdx+rbx*1]
+    vmovaps ymm11,YMMWORD PTR [rcx+rbx*1]
+    vmovaps ymm12,YMMWORD PTR [rax+rbx*1]
+    vmovaps ymm13,YMMWORD PTR [rbp+rbx*1+0x0]
+    vmovaps ymm14,YMMWORD PTR [rsi+rbx*1]
+    vmovaps ymm15,YMMWORD PTR [r8+rbx*1]
+    vaddps  ymm0,ymm10,ymm13
+    vminps  ymm9,ymm9,ymm0
+    vaddps  ymm0,ymm11,ymm13
+    vminps  ymm8,ymm8,ymm0
+    vaddps  ymm0,ymm12,ymm13
+    vminps  ymm7,ymm7,ymm0
+    vaddps  ymm0,ymm10,ymm14
+    vminps  ymm6,ymm6,ymm0
+    vaddps  ymm0,ymm11,ymm14
+    vminps  ymm5,ymm5,ymm0
+    vaddps  ymm0,ymm12,ymm14
+    vminps  ymm4,ymm4,ymm0
+    vaddps  ymm0,ymm10,ymm15
+    vminps  ymm3,ymm3,ymm0
+    vaddps  ymm0,ymm11,ymm15
+    vminps  ymm2,ymm2,ymm0
+    vaddps  ymm0,ymm12,ymm15
+    vminps  ymm1,ymm1,ymm0
+    add     rdi,0x1
+    add     rbx,0x20
+    cmp     rdi,r10
+    jl      LOOP
+
+</code></pre>
+<p>This is a fairly clean and straightforward loop with almost nothing extra.
+We load 6 SIMD vectors to 256-bit registers <code>ymm10-ymm15</code> and accumulate the results into 9 registers <code>ymm1-ymm9</code>, keeping <code>ymm0</code> as a temporary variable.
+Notice how <code>rbx</code> is incremented by 32 bytes at each iteration, which is the size of a 256-bit SIMD vector.</p>
+<h3><a class="header" href="#rustc-4" id="rustc-4"><code>rustc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps ymm10,YMMWORD PTR [r9+rbx*1]
+    vmovaps ymm11,YMMWORD PTR [rax+rbx*1]
+    vmovaps ymm12,YMMWORD PTR [rcx+rbx*1]
+    vmovaps ymm13,YMMWORD PTR [r10+rbx*1]
+    vmovaps ymm14,YMMWORD PTR [r8+rbx*1]
+    vmovaps ymm15,YMMWORD PTR [rdx+rbx*1]
+    vaddps  ymm0,ymm10,ymm13
+    vminps  ymm9,ymm9,ymm0
+    vaddps  ymm0,ymm10,ymm14
+    vminps  ymm8,ymm8,ymm0
+    vaddps  ymm0,ymm10,ymm15
+    vminps  ymm7,ymm7,ymm0
+    vaddps  ymm0,ymm11,ymm13
+    vminps  ymm6,ymm6,ymm0
+    vaddps  ymm0,ymm11,ymm14
+    vminps  ymm5,ymm5,ymm0
+    vaddps  ymm0,ymm11,ymm15
+    vminps  ymm4,ymm4,ymm0
+    vaddps  ymm0,ymm12,ymm13
+    vminps  ymm3,ymm3,ymm0
+    vaddps  ymm0,ymm12,ymm14
+    vminps  ymm2,ymm2,ymm0
+    vaddps  ymm0,ymm12,ymm15
+    vminps  ymm1,ymm1,ymm0
+    add     rbx,0x20
+    dec     r13
+    jne     LOOP
+
+</code></pre>
+<p>Same as <code>clang</code>s output, but instead of a loop counter that goes up, <code>r13</code> is decremented on each iteration.</p>
+<h1><a class="header" href="#more-register-reuse" id="more-register-reuse">More register reuse</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v5_more_register_reuse/src/lib.rs">Full source</a></p>
+<p>In this version, we will re-organize our SIMD-packed data in a way that allows us to do more arithmetic operations on the data after it has been loaded into the CPU registers.
+Recall how in the <a href="v4.html">previous implementation</a> we performed 6 loads of <code>f32x8</code> vectors and computed 9 <code>f32x8</code> vectors worth of results in the performance critical loop.
+Now, will perform 2 loads of <code>f32x8</code> vectors and compute 8 <code>f32x8</code> vectors worth of results.
+This time, each <code>f32x8</code> will contain 8 elements from 8 different rows instead of 8 elements from the same row.
+As usual, the columns of <code>vd</code> are the rows of <code>vt</code>.
+For each pair of <code>f32x8</code> vectors from <code>vd</code> and <code>vt</code>, we will compute results for 8 different rows and 8 different columns, which means we can write 64 unique <code>f32</code> results into <code>r</code> after each pass.</p>
+<p>The approach is explained in detail with nice visualizations in the <a href="http://ppc.cs.aalto.fi/ch2/v5/">reference materials</a>.</p>
+<h2><a class="header" href="#implementation" id="implementation">Implementation</a></h2>
+<p>We can keep most of the code from <a href="v4.html"><code>v4</code></a> as it is, but with some modifications.
+First, we need to pack our SIMD vectors into a different order.
+Fortunately, this is simply a matter of swapping some indexes.
+Let's start by allocating some space for <code>vd</code> and <code>vt</code>.
+Each row of <code>f32x8</code>s in <code>vd</code> corresponds to 8 rows of <code>d</code>, and each row of <code>f32x8</code>s in <code>vt</code> corresponds to 8 columns of <code>d</code>.</p>
+<pre><code class="language-rust no_run noplaypen">    let vecs_per_col = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+    // Like v4, but this time pack all elements of d into f32x8s vertically
+    let mut vd = std::vec![simd::f32x8_infty(); n * vecs_per_col];
+    let mut vt = std::vec![simd::f32x8_infty(); n * vecs_per_col];
+</code></pre>
+<p>The preprocessing will be very similar to <a href="v4.html"><code>v4</code></a>, but this time we pack 8 rows and 8 columns of <code>d</code> into <code>vd</code> and <code>vt</code>, vertically as <code>f32x8</code> vectors.</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for row i of vd and row i of vt,
+    // copy 8 rows of d into vd and 8 columns of d into vt
+    let pack_simd_row_block = |(i, (vd_row, vt_row)): (usize, (&amp;mut [f32x8], &amp;mut [f32x8]))| {
+        for (jv, (vx, vy)) in vd_row.iter_mut().zip(vt_row.iter_mut()).enumerate() {
+            let mut vx_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            let mut vy_tmp = [std::f32::INFINITY; simd::f32x8_LENGTH];
+            for (b, (x, y)) in vx_tmp.iter_mut().zip(vy_tmp.iter_mut()).enumerate() {
+                let j = i * simd::f32x8_LENGTH + b;
+                if i &lt; n &amp;&amp; j &lt; n {
+                    *x = d[n * j + jv];
+                    *y = d[n * jv + j];
+                }
+            }
+            *vx = simd::from_slice(&amp;vx_tmp);
+            *vy = simd::from_slice(&amp;vy_tmp);
+        }
+    };
+    vd.par_chunks_mut(n)
+        .zip(vt.par_chunks_mut(n))
+        .enumerate()
+        .for_each(pack_simd_row_block);
+</code></pre>
+<p>Now all elements from <code>d</code> have been packed vertically into 8-row blocks.
+Next, we will perform the <code>step</code> computations on all row blocks, such that the smallest unit of work for a thread is to compute 8 rows worth of results into <code>r</code>.
+Before defining <code>step_row_block</code>, let's plan how we will divide the work into parallel threads.
+Since one row of <code>f32x8</code>s in <code>vd</code> represents 8 rows of <code>d</code>, we will chunk <code>r</code> into blocks of 8 rows and chunk <code>vd</code> into single rows.
+Then, we zip them up and apply <code>step_row_block</code> in parallel on all pairs:</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in d, compute all results for 8 rows into r
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // ...
+    };
+    // Chunk up r into row blocks containing 8 rows, each containing n f32s,
+    // and chunk up vd into rows, each containing n f32x8s
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .zip(vd.par_chunks(n))
+        .for_each(step_row_block);
+</code></pre>
+<p>Now, for a 8-row block of <code>d</code> (<code>vd_row</code>), we need to compute <code>8n</code> results into <code>r</code> by iterating over all 8-column blocks of <code>d</code> (row <code>j</code> of <code>vt</code>).</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in d, compute all results for 8 rows into r
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // Chunk up vt into rows, each containing n f32x8 vectors,
+        // exactly as vd_row
+        for (j, vt_row) in vt.chunks_exact(n).enumerate() {
+            // Intermediate results for 8 rows
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            // ...
+</code></pre>
+<p>In the innermost loop, we loop over a pair of rows <code>vd_row</code> and <code>vt_row</code>.
+For each pair of <code>f32x8</code> vectors, we will compute 3 different permutations of the vector elements for <code>vd_row</code> and 1 permutation for <code>vt_row</code>.
+Then, combining all permuted <code>f32x8</code>s, we accumulate 64 unique results for 8 rows and 8 columns of <code>d</code>.
+We'll define a helper function <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs#L50"><code>simd::swap</code></a> for inserting intrinsic functions that permute the elements of a <code>f32x8</code>.</p>
+<pre><code class="language-rust no_run noplaypen">            // Iterate horizontally over both rows,
+            // permute elements of each `f32x8` to create 8 unique combinations,
+            // and compute 8 minimums from all combinations
+            for (&amp;d0, &amp;t0) in vd_row.iter().zip(vt_row) {
+                // Compute permutations of f32x8 elements
+                // 2 3 0 1 6 7 4 5
+                let d2 = simd::swap(d0, 2);
+                // 4 5 6 7 0 1 2 3
+                let d4 = simd::swap(d0, 4);
+                // 6 7 4 5 2 3 0 1
+                let d6 = simd::swap(d4, 2);
+                // 1 0 3 2 5 4 7 6
+                let t1 = simd::swap(t0, 1);
+                // Compute 8 independent, intermediate results for 8 rows
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+</code></pre>
+<p>When we are done with the loop, we need to take care when extracting results from the 8 intermediate <code>f32x8</code> results accumulated into <code>tmp</code> to make sure the indexes are mapped correctly back to <code>r</code>.
+Since <code>tmp</code> contains 8 rows of <code>f32x8</code> vectors, we need to extract 64 <code>f32</code>s into a 8-by-8 block in <code>r</code>.
+The tricky part is that we have to somehow undo all the permutations.</p>
+<p>Let's use a fixed, two-dimensional indexing pattern for writing <code>f32</code>s into a 8-by-8 block in <code>r_row_block</code> and figure out later how to read from the correct indexes in <code>tmp</code>.
+We chunk <code>r_row_block</code> into 8 rows of length <code>n</code> and enumerate the rows by <code>tmp_i</code>.
+Then we iterate over 8 elements starting at <code>j * 8</code> of each row <code>tmp_i</code> in <code>r_row_block</code> and enumerate them by <code>tmp_j</code>, where <code>j</code> is the index of <code>vt_row</code> in <code>vt</code>.
+Now we need to extract 64 <code>f32</code> results from <code>tmp</code> and write them to row <code>tmp_i</code> and column <code>tmp_j</code> in the sub-block of 64 <code>f32</code>s in <code>r_row_block</code>, while taking into account that the elements in <code>tmp</code> are permuted.</p>
+<p>Consider <a href="http://ppc.cs.aalto.fi/ch2/v5.png">this</a> figure, and the 8-by-8 block on the left which shows the indexes of all elements in <code>vv</code>, i.e. our <code>tmp</code>.
+Blue indexes on the left side of the plus sign equals <code>tmp_i</code> and orange indexes on the right side of the plus sign equals <code>tmp_j</code>.
+If we permute the elements of rows with odd indexes by <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/tools/src/simd.rs#L50"><code>simd::swap(v, 1)</code></a>, you can see that the <code>tmp_j</code> indexes will follow <code>0..8</code> on every row.
+More importantly, we can now retrieve the result for row <code>tmp_i</code> at column <code>tmp_j</code> from <code>tmp</code> at row <code>tmp_i XOR tmp_j</code> from element <code>tmp_j</code>.</p>
+<pre><code class="language-rust no_run noplaypen">            // Swap elements of f32x8s at odd indexes to enable a linear iteration
+            // pattern for index tmp_j when extracting elements
+            for i in (1..simd::f32x8_LENGTH).step_by(2) {
+                tmp[i] = simd::swap(tmp[i], 1);
+            }
+            // Set 8 final results (i.e. 64 f32 results in total)
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+</code></pre>
+<h2><a class="header" href="#full-step_row_block-implementation-1" id="full-step_row_block-implementation-1">Full <code>step_row_block</code> implementation</a></h2>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in d, compute all results for 8 rows into r
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // Chunk up vt into rows, each containing n f32x8 vectors,
+        // exactly as vd_row
+        for (j, vt_row) in vt.chunks_exact(n).enumerate() {
+            // Intermediate results for 8 rows
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            // Iterate horizontally over both rows,
+            // permute elements of each `f32x8` to create 8 unique combinations,
+            // and compute 8 minimums from all combinations
+            for (&amp;d0, &amp;t0) in vd_row.iter().zip(vt_row) {
+                // Compute permutations of f32x8 elements
+                // 2 3 0 1 6 7 4 5
+                let d2 = simd::swap(d0, 2);
+                // 4 5 6 7 0 1 2 3
+                let d4 = simd::swap(d0, 4);
+                // 6 7 4 5 2 3 0 1
+                let d6 = simd::swap(d4, 2);
+                // 1 0 3 2 5 4 7 6
+                let t1 = simd::swap(t0, 1);
+                // Compute 8 independent, intermediate results for 8 rows
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+            // Swap elements of f32x8s at odd indexes to enable a linear iteration
+            // pattern for index tmp_j when extracting elements
+            for i in (1..simd::f32x8_LENGTH).step_by(2) {
+                tmp[i] = simd::swap(tmp[i], 1);
+            }
+            // Set 8 final results (i.e. 64 f32 results in total)
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+        }
+    };
+    // Chunk up r into row blocks containing 8 rows, each containing n f32s,
+    // and chunk up vd into rows, each containing n f32x8s
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .zip(vd.par_chunks(n))
+        .for_each(step_row_block);
+</code></pre>
+<h2><a class="header" href="#benchmark-5" id="benchmark-5">Benchmark</a></h2>
+<p>Let's run benchmarks with the same settings as before: <code>n = 6000</code>, single iteration, four threads bound to four cores.
+C++ version available <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v5_more_register_reuse/step.cpp">here</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v5</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">2.4</td><td align="left">2.46</td></tr>
+<tr><td align="left">C++ <code>v5</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">2.6</td><td align="left">2.06</td></tr>
+<tr><td align="left">Rust <code>v5</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">2.5</td><td align="left">2.54</td></tr>
+</tbody></table>
+<p>The lower IPC for <code>clang</code> might be due to lower usage of CPUs (2.5 CPUs) than in other versions (3.5 CPUs).
+The reason for this is still unclear.</p>
+<h2><a class="header" href="#assembly-1" id="assembly-1">Assembly</a></h2>
+<p>All 3 compilers produced similar loops, which all load two <code>f32x8</code>s, perform 4 permutations, and compute 8 additions and 8 minimums.
+One notable difference is that <code>gcc</code> performs all permutations using 32-bit and 128-bit lanes, while both <code>clang</code> and <code>rustc</code> load one register as double-precision floats and do permutations using 32-bit and 64-bit lanes.</p>
+<h3><a class="header" href="#gcc-4" id="gcc-4"><code>gcc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps    ymm2,YMMWORD PTR [rdx+rax*1]
+    vmovaps    ymm3,YMMWORD PTR [rcx+rax*1]
+    add        rax,0x20
+    vpermilps  ymm0,ymm2,0xb1
+    vperm2f128 ymm13,ymm3,ymm3,0x1
+    vpermilps  ymm14,ymm3,0x4e
+    vaddps     ymm15,ymm3,ymm2
+    vaddps     ymm3,ymm3,ymm0
+    vpermilps  ymm1,ymm13,0x4e
+    vminps     ymm7,ymm7,ymm3
+    vaddps     ymm3,ymm2,ymm14
+    vaddps     ymm14,ymm0,ymm14
+    vminps     ymm9,ymm9,ymm15
+    vminps     ymm10,ymm10,ymm3
+    vaddps     ymm3,ymm2,ymm13
+    vaddps     ymm13,ymm0,ymm13
+    vaddps     ymm2,ymm2,ymm1
+    vaddps     ymm0,ymm0,ymm1
+    vminps     ymm6,ymm6,ymm14
+    vminps     ymm11,ymm11,ymm3
+    vminps     ymm5,ymm5,ymm13
+    vminps     ymm8,ymm8,ymm2
+    vminps     ymm4,ymm4,ymm0
+    cmp        rax,r12
+    jne        LOOP
+
+</code></pre>
+<h3><a class="header" href="#clang-4" id="clang-4"><code>clang</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovapd   ymm9,YMMWORD PTR [rax+rsi*1]
+    vmovaps   ymm10,YMMWORD PTR [rcx+rsi*1]
+    vpermpd   ymm11,ymm9,0x4e
+    vpermilpd ymm12,ymm9,0x5
+    vpermilpd ymm13,ymm11,0x5
+    vpermilps ymm14,ymm10,0xb1
+    vaddps    ymm15,ymm9,ymm10
+    vminps    ymm5,ymm5,ymm15
+    vaddps    ymm9,ymm9,ymm14
+    vminps    ymm4,ymm4,ymm9
+    vaddps    ymm9,ymm12,ymm10
+    vminps    ymm6,ymm6,ymm9
+    vaddps    ymm9,ymm12,ymm14
+    vminps    ymm3,ymm3,ymm9
+    vaddps    ymm9,ymm11,ymm10
+    vminps    ymm7,ymm7,ymm9
+    vaddps    ymm9,ymm11,ymm14
+    vminps    ymm2,ymm2,ymm9
+    vaddps    ymm9,ymm10,ymm13
+    vminps    ymm8,ymm8,ymm9
+    vaddps    ymm9,ymm13,ymm14
+    vminps    ymm1,ymm1,ymm9
+    add       rdi,0x1
+    add       rsi,0x20
+    cmp       rdi,r15
+    jl        LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc-5" id="rustc-5"><code>rustc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    inc       rdx
+    vmovapd   ymm9,YMMWORD PTR [rcx+rax*1]
+    vmovaps   ymm10,YMMWORD PTR [r9+rax*1]
+    vpermilpd ymm11,ymm9,0x5
+    vpermpd   ymm12,ymm9,0x4e
+    vpermpd   ymm13,ymm9,0x1b
+    vpermilps ymm14,ymm10,0xb1
+    vaddps    ymm15,ymm9,ymm10
+    vminps    ymm8,ymm8,ymm15
+    vaddps    ymm9,ymm9,ymm14
+    vminps    ymm7,ymm7,ymm9
+    vaddps    ymm9,ymm11,ymm10
+    vminps    ymm6,ymm6,ymm9
+    vaddps    ymm9,ymm11,ymm14
+    vminps    ymm5,ymm5,ymm9
+    vaddps    ymm9,ymm12,ymm10
+    vminps    ymm4,ymm4,ymm9
+    vaddps    ymm9,ymm12,ymm14
+    vminps    ymm3,ymm3,ymm9
+    vaddps    ymm9,ymm10,ymm13
+    vminps    ymm2,ymm2,ymm9
+    vaddps    ymm9,ymm13,ymm14
+    vminps    ymm1,ymm1,ymm9
+    add       rax,0x20
+    cmp       rdx,rsi
+    jb        LOOP
+
+</code></pre>
+<h1><a class="header" href="#software-prefetching" id="software-prefetching">Software prefetching</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v6_prefetch/src/lib.rs">Full source</a></p>
+<p>In this version we will attempt to take advantage of vacant CPU execution ports by inserting prefetch instructions to reduce average memory access latency in the performance critical loop.</p>
+<p>The motivation behind this idea is explained in the <a href="http://ppc.cs.aalto.fi/ch2/v5asm">reference materials</a>.
+Note that <code>vpermpd</code> and <code>vpermilpd</code> use same execution ports as <code>vperm2f128</code> and <code>vpermilps</code>, so the reasoning holds also for <code>clang</code> and <code>rustc</code>.</p>
+<h2><a class="header" href="#implementation-1" id="implementation-1">Implementation</a></h2>
+<p>We won't be making much changes from <a href="v5.html"><code>v5</code></a> since we only want to insert 2 <code>prefetcht0</code> instructions in the innermost loop.
+<code>prefetcht0</code> uses the strongest locality hint T0, which requests the data to be loaded into all cache levels.
+The instruction is provided in the same Intel intrinsics crate we have been using for inserting SIMD instructions, where it is defined as <a href="https://doc.rust-lang.org/1.37.0/core/arch/x86_64/fn._mm_prefetch.html"><code>_mm_prefetch</code></a>.
+Since we will be using it only for prefetching addresses containing <code>f32x8</code>s, we might as well wrap it into a helper function and put it in our SIMD helper module:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline]
+pub fn prefetch(p: *const f32x8, offset: isize) {
+    unsafe { _mm_prefetch(p.offset(offset) as *const i8, _MM_HINT_T0) }
+}
+</code></pre>
+<p>The function takes as arguments the memory address of an <code>f32x8</code>, for which we want to request a cache line fetch using locality T0.
+In C, <code>p.offset(offset)</code> would basically be equal to <code>p + offset</code>.
+We need the <code>unsafe</code> expression both for using <code>_mm_prefetch</code> intrinsic and <code>p.offset</code>, but we shouldn't have to worry about memory safety so much here since we only need the offset address, the pointer will not be dereferenced.</p>
+<p>Now that we have our prefetch-helper, we can add it to our <a href="v5.html"><code>v5</code></a> implementation.
+First, we get a pair of <code>f32x8</code> pointers to the current row pair <code>vd_row</code> and <code>vt_row</code>:</p>
+<pre><code class="language-rust no_run noplaypen">    // Everything is exactly as in v5, but we add some prefetch instructions in the innermost loop
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // Create const raw pointers for specifying addresses to prefetch
+        let vd_row_ptr = vd_row.as_ptr();
+        const PREFETCH_LENGTH: usize = 20;
+        for (j, vt_row) in vt.chunks_exact(n).enumerate() {
+            let vt_row_ptr = vt_row.as_ptr();
+</code></pre>
+<p><code>PREFETCH_LENGTH = 20</code> is the amount of <code>f32x8</code> addresses we want to look ahead, and it was chosen empirically in the reference implementation.</p>
+<p>We'll insert two prefetch-hints for addresses 20 elements ahead of <code>d0</code> and <code>t0</code> in the beginning of the innermost loop:</p>
+<pre><code class="language-rust no_run noplaypen">            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            for (col, (&amp;d0, &amp;t0)) in vd_row.iter().zip(vt_row).enumerate() {
+                // Insert prefetch hints for fetching the cache line containing
+                // the memory address 20 addresses ahead of the current column
+                simd::prefetch(vd_row_ptr, (col + PREFETCH_LENGTH) as isize);
+                simd::prefetch(vt_row_ptr, (col + PREFETCH_LENGTH) as isize);
+                let d2 = simd::swap(d0, 2);
+                let d4 = simd::swap(d0, 4);
+                let d6 = simd::swap(d4, 2);
+                let t1 = simd::swap(t0, 1);
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+</code></pre>
+<p>That's about it, let's run the benchmarks.
+C++ version available <a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/cpp/v6_prefetch/step.cpp">here</a>.</p>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v6</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">2.10</td><td align="left">3.20</td></tr>
+<tr><td align="left">C++ <code>v6</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">2.33</td><td align="left">2.25</td></tr>
+<tr><td align="left">Rust <code>v6</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">2.67</td><td align="left">2.77</td></tr>
+</tbody></table>
+<p>Something is not right, the Rust implementation became slower compared to the <a href="v5.html">previous</a> version.</p>
+<p>Let's look at the assembly.</p>
+<h3><a class="header" href="#gcc-5" id="gcc-5"><code>gcc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    vmovaps    ymm2,YMMWORD PTR [rdx-0x280]
+    vmovaps    ymm3,YMMWORD PTR [rax-0x280]
+    prefetcht0 BYTE PTR [rax]
+    add        rax,0x20
+    prefetcht0 BYTE PTR [rdx]
+    add        rdx,0x20
+    vpermilps  ymm0,ymm2,0xb1
+    vperm2f128 ymm13,ymm3,ymm3,0x1
+    vpermilps  ymm14,ymm3,0x4e
+    vaddps     ymm15,ymm3,ymm2
+    vaddps     ymm3,ymm3,ymm0
+    vpermilps  ymm1,ymm13,0x4e
+    vminps     ymm7,ymm7,ymm3
+    vaddps     ymm3,ymm2,ymm14
+    vaddps     ymm14,ymm0,ymm14
+    vminps     ymm11,ymm11,ymm15
+    vminps     ymm10,ymm10,ymm3
+    vaddps     ymm3,ymm2,ymm13
+    vaddps     ymm13,ymm0,ymm13
+    vaddps     ymm2,ymm2,ymm1
+    vaddps     ymm0,ymm0,ymm1
+    vminps     ymm6,ymm6,ymm14
+    vminps     ymm9,ymm9,ymm3
+    vminps     ymm5,ymm5,ymm13
+    vminps     ymm8,ymm8,ymm2
+    vminps     ymm4,ymm4,ymm0
+    cmp        rax,rcx
+    jne        LOOP
+
+</code></pre>
+<p>There are two prefetch-hints <code>prefetcht0</code>, placed <code>0x280</code> bytes ahead of the current loop indexes in registers <code>rdx</code> and <code>rax</code>.
+This equals 20 <code>f32x8</code> vectors, because each <code>f32x8</code> is 32 bytes and <code>0x280/32 = 20</code>, as we wanted.</p>
+<h3><a class="header" href="#clang-5" id="clang-5"><code>clang</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    prefetcht0 BYTE PTR [rcx+rdi*1]
+    prefetcht0 BYTE PTR [rax+rdi*1]
+    vmovapd    ymm9,YMMWORD PTR [rcx+rdi*1-0x280]
+    vmovaps    ymm10,YMMWORD PTR [rax+rdi*1-0x280]
+    vpermpd    ymm11,ymm9,0x4e
+    vpermilpd  ymm12,ymm9,0x5
+    vpermilpd  ymm13,ymm11,0x5
+    vpermilps  ymm14,ymm10,0xb1
+    vaddps     ymm15,ymm9,ymm10
+    vminps     ymm8,ymm8,ymm15
+    vaddps     ymm9,ymm9,ymm14
+    vminps     ymm4,ymm4,ymm9
+    vaddps     ymm9,ymm12,ymm10
+    vminps     ymm7,ymm7,ymm9
+    vaddps     ymm9,ymm12,ymm14
+    vminps     ymm3,ymm3,ymm9
+    vaddps     ymm9,ymm11,ymm10
+    vminps     ymm6,ymm6,ymm9
+    vaddps     ymm9,ymm11,ymm14
+    vminps     ymm2,ymm2,ymm9
+    vaddps     ymm9,ymm10,ymm13
+    vminps     ymm5,ymm5,ymm9
+    vaddps     ymm9,ymm13,ymm14
+    vminps     ymm1,ymm1,ymm9
+    add        rdi,0x20
+    add        rdx,0xffffffffffffffff
+    jne        LOOP
+
+</code></pre>
+<h3><a class="header" href="#rustc-6" id="rustc-6"><code>rustc</code></a></h3>
+<pre><code class="language-x86asm">LOOP:
+    inc        rbx
+    vmovapd    ymm9,YMMWORD PTR [r11+rsi*1-0x280]
+    vmovaps    ymm10,YMMWORD PTR [rcx+rsi*1]
+    prefetcht0 BYTE PTR [r11+rsi*1]
+    prefetcht0 BYTE PTR [rdx+rsi*1]
+    vpermilpd  ymm11,ymm9,0x5
+    vpermpd    ymm12,ymm9,0x4e
+    vpermpd    ymm13,ymm9,0x1b
+    vpermilps  ymm14,ymm10,0xb1
+    vaddps     ymm15,ymm9,ymm10
+    vminps     ymm8,ymm8,ymm15
+    vmovaps    YMMWORD PTR [rsp+0xc0],ymm8
+    vaddps     ymm9,ymm9,ymm14
+    vminps     ymm7,ymm7,ymm9
+    vmovaps    YMMWORD PTR [rsp+0xe0],ymm7
+    vaddps     ymm9,ymm11,ymm10
+    vminps     ymm6,ymm6,ymm9
+    vmovaps    YMMWORD PTR [rsp+0x100],ymm6
+    vaddps     ymm9,ymm11,ymm14
+    vminps     ymm5,ymm5,ymm9
+    vmovaps    YMMWORD PTR [rsp+0x120],ymm5
+    vaddps     ymm9,ymm12,ymm10
+    vminps     ymm4,ymm4,ymm9
+    vmovaps    YMMWORD PTR [rsp+0x140],ymm4
+    vaddps     ymm9,ymm12,ymm14
+    vminps     ymm3,ymm3,ymm9
+    vmovaps    YMMWORD PTR [rsp+0x160],ymm3
+    vaddps     ymm9,ymm10,ymm13
+    vminps     ymm2,ymm2,ymm9
+    vmovaps    YMMWORD PTR [rsp+0x180],ymm2
+    vaddps     ymm9,ymm13,ymm14
+    vminps     ymm1,ymm1,ymm9
+    vmovaps    YMMWORD PTR [rsp+0x1a0],ymm1
+    add        rsi,0x20
+    cmp        rbx,rax
+    jb         LOOP
+
+</code></pre>
+<p>We can see two prefetch instructions with locality hint T0, but for some reason there is also pretty bad register spilling.
+This behaviour seems a bit odd, since the only thing we changed in the inner loop from <a href="v5.html"><code>v5</code></a> was to add two prefetch instructions.
+Also, we can see that after writing a register into memory, the same register is not used anywhere in the loop during that iteration.</p>
+<p>Recall how we faced the same issue in <a href="v4.html"><code>v4</code></a>, which we solved by unrolling the <code>tmp</code> results array into separate, mutable variables.
+This seemed to encourage the compiler to keep the temporary results in registers for the duration of the loop, so let's do the same also here.</p>
+<h2><a class="header" href="#full-step_row_block-implementation-2" id="full-step_row_block-implementation-2">Full <code>step_row_block</code> implementation</a></h2>
+<pre><code class="language-rust no_run noplaypen">    // Everything is mostly as in v5,
+    // but we add some prefetch instructions in the innermost loop,
+    // and unroll the tmp results array to avoid register spilling
+    let step_row_block = |(r_row_block, vd_row): (&amp;mut [f32], &amp;[f32x8])| {
+        // Create const raw pointers for specifying addresses to prefetch
+        let vd_row_ptr = vd_row.as_ptr();
+        const PREFETCH_LENGTH: usize = 20;
+        for (j, vt_row) in vt.chunks_exact(n).enumerate() {
+            let vt_row_ptr = vt_row.as_ptr();
+            let mut tmp0 = simd::f32x8_infty();
+            let mut tmp1 = simd::f32x8_infty();
+            let mut tmp2 = simd::f32x8_infty();
+            let mut tmp3 = simd::f32x8_infty();
+            let mut tmp4 = simd::f32x8_infty();
+            let mut tmp5 = simd::f32x8_infty();
+            let mut tmp6 = simd::f32x8_infty();
+            let mut tmp7 = simd::f32x8_infty();
+            for (col, (&amp;d0, &amp;t0)) in vd_row.iter().zip(vt_row).enumerate() {
+                // Insert prefetch hints for fetching the cache line containing
+                // the memory address 20 addresses ahead of the current column
+                simd::prefetch(vd_row_ptr, (col + PREFETCH_LENGTH) as isize);
+                simd::prefetch(vt_row_ptr, (col + PREFETCH_LENGTH) as isize);
+                let d2 = simd::swap(d0, 2);
+                let d4 = simd::swap(d0, 4);
+                let d6 = simd::swap(d4, 2);
+                let t1 = simd::swap(t0, 1);
+                tmp0 = simd::min(tmp0, simd::add(d0, t0));
+                tmp1 = simd::min(tmp1, simd::add(d0, t1));
+                tmp2 = simd::min(tmp2, simd::add(d2, t0));
+                tmp3 = simd::min(tmp3, simd::add(d2, t1));
+                tmp4 = simd::min(tmp4, simd::add(d4, t0));
+                tmp5 = simd::min(tmp5, simd::add(d4, t1));
+                tmp6 = simd::min(tmp6, simd::add(d6, t0));
+                tmp7 = simd::min(tmp7, simd::add(d6, t1));
+            }
+            let tmp = [
+                tmp0, simd::swap(tmp1, 1),
+                tmp2, simd::swap(tmp3, 1),
+                tmp4, simd::swap(tmp5, 1),
+                tmp6, simd::swap(tmp7, 1),
+            ];
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+        }
+    };
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .zip(vd.par_chunks(n))
+        .for_each(step_row_block);
+</code></pre>
+<h3><a class="header" href="#rustc-without-spilling" id="rustc-without-spilling"><code>rustc</code> without spilling</a></h3>
+<pre><code class="language-x86asm">LOOP:
+    inc        rbx
+    vmovapd    ymm9,YMMWORD PTR [r11+rsi*1-0x280]
+    vmovaps    ymm10,YMMWORD PTR [rcx+rsi*1]
+    prefetcht0 BYTE PTR [r11+rsi*1]
+    prefetcht0 BYTE PTR [rdx+rsi*1]
+    vpermilpd  ymm11,ymm9,0x5
+    vpermpd    ymm12,ymm9,0x4e
+    vpermpd    ymm13,ymm9,0x1b
+    vpermilps  ymm14,ymm10,0xb1
+    vaddps     ymm15,ymm9,ymm10
+    vminps     ymm4,ymm4,ymm15
+    vaddps     ymm9,ymm9,ymm14
+    vminps     ymm8,ymm8,ymm9
+    vaddps     ymm9,ymm11,ymm10
+    vminps     ymm3,ymm3,ymm9
+    vaddps     ymm9,ymm11,ymm14
+    vminps     ymm7,ymm7,ymm9
+    vaddps     ymm9,ymm12,ymm10
+    vminps     ymm2,ymm2,ymm9
+    vaddps     ymm9,ymm12,ymm14
+    vminps     ymm6,ymm6,ymm9
+    vaddps     ymm9,ymm10,ymm13
+    vminps     ymm1,ymm1,ymm9
+    vaddps     ymm9,ymm13,ymm14
+    vminps     ymm5,ymm5,ymm9
+    add        rsi,0x20
+    cmp        rbx,rax
+    jb         LOOP
+
+</code></pre>
+<h2><a class="header" href="#benchmark-6" id="benchmark-6">Benchmark</a></h2>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v6</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">2.10</td><td align="left">3.20</td></tr>
+<tr><td align="left">C++ <code>v6</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">2.33</td><td align="left">2.25</td></tr>
+<tr><td align="left">Rust <code>v6</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">2.16</td><td align="left">3.23</td></tr>
+</tbody></table>
+<h1><a class="header" href="#cache-reuse" id="cache-reuse">Cache reuse</a></h1>
+<p><a href="https://github.com/parallel-rust-cpp/shortcut-comparison/blob/8cdab059d22eb8f30e1408c2fbf0ae666fa231d9/src/rust/v7_cache_reuse/src/lib.rs">Full source</a></p>
+<p>In our final version, we will attempt to increase cache locality also for data from <code>vt</code>, by reading <code>f32x8</code> row pairs from <code>vd</code> and <code>vt</code> using a <a href="https://en.wikipedia.org/wiki/Z-order_curve">Z-order curve</a> iteration pattern.
+If you look at <a href="http://ppc.cs.aalto.fi/cache2">this animation</a>, we will implement the last pattern to the right.
+Please see the <a href="http://ppc.cs.aalto.fi/ch2/v7/">reference materials</a> for a detailed explanation.</p>
+<h2><a class="header" href="#implementation-2" id="implementation-2">Implementation</a></h2>
+<p>This version will be an extension to <a href="v5.html"><code>v5</code></a>, and we won't be using the prefetching hints seen in <a href="v6.html"><code>v6</code></a>.
+There won't be any changes to the performance critical loop or result extraction.
+However, we need to rewrite most of the code to support the Z-order iteration pattern.
+Our approach will be the same as in the reference implementation:</p>
+<ol>
+<li>Create a 2-dimensional Z-order index pattern by sorting the interleaved bits of row index <code>i</code> and column index <code>j</code>.</li>
+<li>Compute partial results in vertical stripes of 500 columns.</li>
+<li>Extract final results from partial results.</li>
+</ol>
+<h3><a class="header" href="#preparation" id="preparation">Preparation</a></h3>
+<p>We start by defining some constants.
+We'll fix the width of all vertical stripes to 500 columns.</p>
+<pre><code class="language-rust no_run noplaypen">    // How many adjacent columns to process during one pass
+    // Smaller numbers improve cache locality but add overhead
+    // from having to merge partial results
+    const COLS_PER_STRIPE: usize = 500;
+    let vecs_per_col = (n + simd::f32x8_LENGTH - 1) / simd::f32x8_LENGTH;
+</code></pre>
+<p>Then we create the 2-dimensional Z-order pattern for pairs of <code>i</code> and <code>j</code>.
+We'll use the same trick as in the reference implementation, which is to use the <a href="https://software.intel.com/sites/landingpage/IntrinsicsGuide/#=undefined&amp;text=_pdep_u32">parallel deposit</a> intrinsic function for scattering the bits of <code>i</code> into odd indexed bits, <code>j</code> into even indexed bits, and <code>OR</code> the results.
+We wrap it into a function <code>z_encode</code> and put it into our toolbox:</p>
+<pre><code class="language-rust no_run noplaypen">#[inline]
+pub fn z_encode(x: u32, y: u32) -&gt; u32 {
+    let odd_bits = 0x55555555;
+    let even_bits = 0xAAAAAAAA;
+    unsafe { _pdep_u32(x, odd_bits) | _pdep_u32(y, even_bits) }
+}
+</code></pre>
+<p>If <code>n</code> would always be a power of 2, there would be no need to handle edge cases, since <code>z_encode</code> would always return the correct <code>z</code>-index.
+However, when <code>n</code> is not a power of 2, we must make sure to skip all <code>z</code>-indexes that are out of bounds.
+We use the same approach as in the reference solution, which is to create a vector <code>row_pairs</code> containing 3-tuples <code>(z_encode(i, j), i, j)</code> and sort it by the <code>z</code>-index.
+When we enumerate the sorted <code>row_pairs</code>, we get correct <code>z</code>-indexes that do not include out of bounds row and column indexes.</p>
+<pre><code class="language-rust no_run noplaypen">    // Build a Z-order curve iteration pattern of pairs (i, j)
+    // by using interleaved bits of i and j as a sort key
+    let mut row_pairs = std::vec![(0, 0, 0); vecs_per_col * vecs_per_col];
+    // Define a function that interleaves one row of indexes
+    let interleave_row = |(i, row): (usize, &amp;mut [(usize, usize, usize)])| {
+        for (j, x) in row.iter_mut().enumerate() {
+            let z = z_encode(i as u32, j as u32);
+            *x = (z as usize, i, j);
+        }
+    };
+    // Apply the function independently on all rows and sort by ija
+    row_pairs
+        .par_chunks_mut(vecs_per_col)
+        .enumerate()
+        .for_each(interleave_row);
+    // We don't need stable sort since there are no duplicate keys
+    row_pairs.par_sort_unstable();
+</code></pre>
+<p>Recall how we used an 8-by-8 <code>tmp</code> block in previous versions to store partial results.
+In this version, we'll store a <code>tmp</code> block for every Z-order index pair <code>(i, j)</code> into <code>partial_results</code>.
+By storing <code>tmp</code> blocks into <code>partial_results</code> for every index pair, we can fairly easily load and write into the correct <code>tmp</code> block when we process each vertical stripe of data.</p>
+<pre><code class="language-rust no_run noplaypen">    // We'll be processing the input one stripe at a time
+    let mut vd = std::vec![simd::f32x8_infty(); COLS_PER_STRIPE * vecs_per_col];
+    let mut vt = std::vec![simd::f32x8_infty(); COLS_PER_STRIPE * vecs_per_col];
+    // Non-overlapping working memory for threads to update their results
+    // When enumerated in 8 element chunks, indexes the Z-order curve keys
+    let mut partial_results = std::vec![simd::f32x8_infty(); vecs_per_col * vecs_per_col * simd::f32x8_LENGTH];
+</code></pre>
+<h3><a class="header" href="#computing-results-in-vertical-stripes" id="computing-results-in-vertical-stripes">Computing results in vertical stripes</a></h3>
+<p>Now, we will compute all the results.
+Note that we haven't initialized the values for <code>vd</code> and <code>vt</code> yet.
+We'll do it inside the loop, one stripe at a time.
+Here's a brief overview what happens during one pass over one stripe:</p>
+<pre><code class="language-rust no_run noplaypen">    // Process vd and vt in Z-order one vertical stripe at a time, writing partial results in parallel
+    let num_vertical_stripes = (n + COLS_PER_STRIPE - 1) / COLS_PER_STRIPE;
+    for stripe in 0..num_vertical_stripes {
+        let col_begin = stripe * COLS_PER_STRIPE;
+        let col_end = n.min((stripe + 1) * COLS_PER_STRIPE);
+        // ...
+        // pack one stripe of vd and vt from d
+        // ...
+        // 1. load results from previous stripe
+        // 2. compute results for this stripe
+        // 3. save results for next stripe
+    }
+
+</code></pre>
+<p>The actual computation is not very different from <a href="v5.html"><code>v5</code></a>, except that we are processing <code>vd</code> and <code>vt</code> in stripes.
+Also, we cannot extract results before we have processed all stripes, so each thread will load and save a <code>tmp</code> block from <code>partial_results</code> for every pair of indexes <code>i</code> and <code>j</code>.
+After loading one stripe of <code>vd</code> and <code>vt</code> from <code>d</code>, we process them in Z-order using index pairs <code>(i, j)</code> from <code>row_pairs</code>.
+If we enumerate <code>row_pairs</code>, we also get the index of each <code>tmp</code> block in <code>partial_results</code>, so we might as well zip <code>row_pairs</code> with <code>partial_results</code> to avoid using the <code>z</code>-indexes directly.
+We apply <code>step_partial_block</code> in parallel such that each thread computes results for one <code>tmp</code> block at index <code>z</code> in <code>partial_results</code> and index pair <code>(i, j)</code> at index <code>z</code> in <code>row_pairs</code>:</p>
+<pre><code class="language-rust no_run noplaypen">        // Function: for a f32x8 block of partial results and indexes row i col j,
+        // 1. Load tmp from partial results
+        // 2. Accumulate results for row i and column j into tmp
+        // 3. Write tmp into the original partial results block
+        let step_partial_block = |(prev_tmp, &amp;(_, i, j)): (&amp;mut [f32x8], &amp;(usize, usize, usize))| {
+            // Copy results from previous pass over previous stripe
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            tmp.copy_from_slice(&amp;prev_tmp);
+            // Get slices over current stripes of row i and column j
+            let vd_row = &amp;vd[(COLS_PER_STRIPE * i)..(COLS_PER_STRIPE * (i + 1))];
+            let vt_row = &amp;vt[(COLS_PER_STRIPE * j)..(COLS_PER_STRIPE * (j + 1))];
+            for (&amp;d0, &amp;t0) in vd_row.iter().zip(vt_row) {
+                let d2 = simd::swap(d0, 2);
+                let d4 = simd::swap(d0, 4);
+                let d6 = simd::swap(d4, 2);
+                let t1 = simd::swap(t0, 1);
+                tmp[0] = simd::min(tmp[0], simd::add(d0, t0));
+                tmp[1] = simd::min(tmp[1], simd::add(d0, t1));
+                tmp[2] = simd::min(tmp[2], simd::add(d2, t0));
+                tmp[3] = simd::min(tmp[3], simd::add(d2, t1));
+                tmp[4] = simd::min(tmp[4], simd::add(d4, t0));
+                tmp[5] = simd::min(tmp[5], simd::add(d4, t1));
+                tmp[6] = simd::min(tmp[6], simd::add(d6, t0));
+                tmp[7] = simd::min(tmp[7], simd::add(d6, t1));
+            }
+            // Store partial results (8 vecs of type f32x8) to global memory
+            // for processing next stripe
+            prev_tmp.copy_from_slice(&amp;tmp);
+        };
+        // Process current stripe in parallel, each thread filling one `tmp` block
+        partial_results
+            .par_chunks_mut(simd::f32x8_LENGTH)
+            .zip(row_pairs.par_iter())
+            .for_each(step_partial_block);
+</code></pre>
+<h3><a class="header" href="#extracting-results" id="extracting-results">Extracting results</a></h3>
+<p>After accumulating results over each vertical stripe, we need to extract all results from the partial results that are in Z-order.</p>
+<p>First, let's replace the <code>z</code>-indexes in <code>row_pairs</code> with a linear index and sort <code>row_pairs</code> by <code>(i, j)</code> in order to get a mapping from <code>z</code> to the correct partial result.
+This allows us to chunk <code>r</code> into rows indexed by <code>i</code>, and write all results to each row element at <code>j</code> by reading <code>partial_results</code> linearly.</p>
+<pre><code class="language-rust no_run noplaypen">    // Replace ij sorting key by linear index to get a mapping to partial_results,
+    // then sort row_pairs by (i, j)
+    let replace_z_index_row = |(z_row, index_row): (usize, &amp;mut [(usize, usize, usize)])| {
+        for (z, idx) in index_row.iter_mut().enumerate() {
+            let (_, i, j) = *idx;
+            *idx = (z_row * vecs_per_col + z, i, j);
+        }
+    };
+    let key_ij = |&amp;idx: &amp;(usize, usize, usize)| { (idx.1, idx.2) };
+    row_pairs
+        .par_chunks_mut(vecs_per_col)
+        .enumerate()
+        .for_each(replace_z_index_row);
+    row_pairs.par_sort_unstable_by_key(key_ij);
+</code></pre>
+<p>Now, <code>row_pairs</code> is ordered linearly, first by <code>i</code> then by <code>j</code>, such that the first element in each tuple element of <code>row_pairs</code> corresponds to the starting index of an 8-by-8 <code>tmp</code> block in <code>partial_results</code>.</p>
+<p>We chunk <code>r</code> into 8-row blocks and read the <code>tmp</code> result blocks from <code>partial_results</code> and extract 64 <code>f32</code> results exactly as in <a href="v5.html"><code>v5</code></a>.</p>
+<pre><code class="language-rust no_run noplaypen">    // Function: for 8 rows in r starting at row i*8,
+    // read partial results at z-index corresponding to each row i and column j
+    // and write them to r
+    let set_z_order_result_block = |(i, r_row_block): (usize, &amp;mut [f32])| {
+        for j in 0..vecs_per_col {
+            // Get z-order index for row i and column j
+            let z = row_pairs[i * vecs_per_col + j].0 * simd::f32x8_LENGTH;
+            // Load tmp from z-order partial results for this i, j pair
+            let mut tmp = [simd::f32x8_infty(); simd::f32x8_LENGTH];
+            tmp.copy_from_slice(&amp;partial_results[z..z + simd::f32x8_LENGTH]);
+            // Continue exactly as in v5
+            for k in (1..simd::f32x8_LENGTH).step_by(2) {
+                tmp[k] = simd::swap(tmp[k], 1);
+            }
+            for (tmp_i, r_row) in r_row_block.chunks_exact_mut(n).enumerate() {
+                for tmp_j in 0..simd::f32x8_LENGTH {
+                    let res_j = j * simd::f32x8_LENGTH + tmp_j;
+                    if res_j &lt; n {
+                        let v = tmp[tmp_i ^ tmp_j];
+                        let vi = tmp_j as u8;
+                        r_row[res_j] = simd::extract(v, vi);
+                    }
+                }
+            }
+        }
+    };
+    r.par_chunks_mut(simd::f32x8_LENGTH * n)
+        .enumerate()
+        .for_each(set_z_order_result_block);
+</code></pre>
+<h2><a class="header" href="#benchmark-7" id="benchmark-7">Benchmark</a></h2>
+<table><thead><tr><th align="left">Implementation</th><th align="left">Compiler</th><th align="left">Time (s)</th><th align="left">IPC</th></tr></thead><tbody>
+<tr><td align="left">C++ <code>v7</code></td><td align="left"><code>gcc 7.4.0-1ubuntu1</code></td><td align="left">2.04</td><td align="left">2.94</td></tr>
+<tr><td align="left">C++ <code>v7</code></td><td align="left"><code>clang 6.0.0-1ubuntu2</code></td><td align="left">2.16</td><td align="left">2.20</td></tr>
+<tr><td align="left">Rust <code>v7</code></td><td align="left"><code>rustc 1.38.0-nightly</code></td><td align="left">2.25</td><td align="left">2.79</td></tr>
+</tbody></table>
+<p>We managed to get a small improvement compared to the Rust program from <a href="v5.html"><code>v5</code></a>, but not as much as in the C++ versions.
+The performance critical loop is the same as in <a href="v5.html"><code>v5</code></a>, which means we cannot search for answers in the assembly code, or at least not as easily as previously.
+One possible performance bottleneck could be that we sort the Z-order indexes twice in the Rust program, while it is done only once in the C++ version.
+Using a better approach for Z-order encoding and decoding might help reducing the running times.</p>
+<h1><a class="header" href="#benchmark-results" id="benchmark-results">Benchmark results</a></h1>
+<p>All 8 implementations have so far been benchmarked on three different Intel CPUs.
+You can find the benchmark program on <a href="https://github.com/parallel-rust-cpp/shortcut-comparison">GitHub</a>.</p>
+<h2><a class="header" href="#benchmark-parameters" id="benchmark-parameters">Benchmark parameters</a></h2>
+<ul>
+<li>All benchmarks use an input array containing <code>6000 * 6000 = 36M</code> elements, allocated and initialized before the benchmark timing starts, and destroyed after the timing has ended.</li>
+<li>All elements of the input array are single precision floating point numbers drawn uniformly at random from <code>[0, 1.0)</code>.</li>
+<li>Before compiling the single-threaded benchmark programs, all parallel libraries were explicitly disabled using compile time switches.</li>
+<li>When benchmarking in parallel, the parallel libraries were instructed to use 4 software threads and the benchmark process was bound with <a href="https://linux.die.net/man/1/taskset"><code>taskset</code></a> to 4 physical cores.</li>
+</ul>
+<h2><a class="header" href="#benchmark-1-intel-xeon-e3-1230-v5" id="benchmark-1-intel-xeon-e3-1230-v5">Benchmark 1: Intel Xeon E3-1230 v5</a></h2>
+<ul>
+<li>Mid-range server/workstation CPU with 4 physical cores and 8 hardware threads (hyper-threading).</li>
+<li>Maximum clock speed <strong>3.8 GHz</strong>.</li>
+<li><a href="https://ark.intel.com/content/www/us/en/ark/products/88182/intel-xeon-processor-e3-1230-v5-8m-cache-3-40-ghz.html">Intel specifications</a>.</li>
+<li><a href="https://en.wikichip.org/wiki/intel/xeon_e3/e3-1230_v5">Wikichip</a>.</li>
+</ul>
+<p><img src="img/Xeon-E3-1230-v5/topology.png" alt="CPU topology of Xeon E3 1230 v5" /></p>
+<h3><a class="header" href="#compiler-versions" id="compiler-versions">Compiler versions</a></h3>
+<ul>
+<li>C++ (GCC): <code>g++ 7.4.0-1ubuntu1</code></li>
+<li>C++ (Clang): <code>clang 6.0.0-1ubuntu2</code></li>
+<li>Rust: <code>rustc 1.38.0-nightly</code></li>
+</ul>
+<p><img src="img/Xeon-E3-1230-v5/multi_core.png" alt="]xeon-multi-core-img" /></p>
+<p><img src="img/Xeon-E3-1230-v5/single_core.png" alt="]xeon-single-core-img" /></p>
+<h2><a class="header" href="#benchmark-2-intel-i5-4690k" id="benchmark-2-intel-i5-4690k">Benchmark 2: Intel i5-4690k</a></h2>
+<ul>
+<li>Mid-range desktop CPU with 4 physical cores and 4 hardware threads (no hyper-threading).</li>
+<li>Overclocked to <strong>4.3 GHz</strong>.</li>
+<li><a href="https://ark.intel.com/content/www/us/en/ark/products/80811/intel-core-i5-4690k-processor-6m-cache-up-to-3-90-ghz.html">Intel specifications</a>.</li>
+</ul>
+<p><img src="img/i5-4690k/topology.png" alt="CPU topology of i5 4690k" /></p>
+<h3><a class="header" href="#compiler-versions-1" id="compiler-versions-1">Compiler versions</a></h3>
+<ul>
+<li>C++ (GCC): <code>g++ 9.1.0</code></li>
+<li>C++ (Clang): <code>clang 8.0.1</code></li>
+<li>Rust: <code>rustc 1.38.0-nightly</code></li>
+</ul>
+<p><img src="img/i5-4690k/multi_core.png" alt="]i5-4690k-multi-core-img" /></p>
+<p><img src="img/i5-4690k/single_core.png" alt="]i5-4690k-single-core-img" /></p>
+<h2><a class="header" href="#benchmark-3-intel-i5-8250u" id="benchmark-3-intel-i5-8250u">Benchmark 3: Intel i5-8250U</a></h2>
+<ul>
+<li>Mid-range laptop CPU with 4 physical cores and 8 hardware threads.</li>
+<li>Maximum clock speed <strong>3.4 GHz</strong>.</li>
+<li><a href="https://ark.intel.com/content/www/us/en/ark/products/124967/intel-core-i5-8250u-processor-6m-cache-up-to-3-40-ghz.html">Intel specifications</a>.</li>
+</ul>
+<p><img src="img/i5-8250U/topology.png" alt="CPU topology of i5 8250U" /></p>
+<h3><a class="header" href="#compiler-versions-2" id="compiler-versions-2">Compiler versions</a></h3>
+<ul>
+<li>C++ (GCC): <code>g++ 9.1.0</code></li>
+<li>C++ (Clang): <code>clang 8.0.1</code></li>
+<li>Rust: <code>rustc 1.38.0-nightly</code></li>
+</ul>
+<p><img src="img/i5-8250U/multi_core.png" alt="]i5-8250U-multi-core-img" /></p>
+<p><img src="img/i5-8250U/single_core.png" alt="]i5-8250U-single-core-img" /></p>
+<h1><a class="header" href="#additional-reading-and-references" id="additional-reading-and-references">Additional reading and references</a></h1>
+<ul>
+<li><a href="https://doc.rust-lang.org/book/title-page.html">The Rust Book, 2nd ed.</a></li>
+<li><a href="https://doc.rust-lang.org/nomicon/">Rustonomicon (advanced Rust programming)</a></li>
+<li><a href="https://blog.rust-lang.org/2015/04/24/Rust-Once-Run-Everywhere.html">on the Rust FFI</a></li>
+<li><a href="https://github.com/nrc/r4cppp">Rust for C++ programmers</a></li>
+<li><a href="http://smallcultfollowing.com/babysteps/blog/2015/12/18/rayon-data-parallelism-in-rust/">Rayon: data parellelism in Rust</a></li>
+<li><a href="http://www.brendangregg.com/perf.html">Brendan Gregg: <code>perf</code> Examples</a></li>
+<li><a href="https://www.reddit.com/r/rust/"><code>r/rust</code></a></li>
+<li><a href="http://ppc.cs.aalto.fi/links/">PPC external resources</a></li>
+<li><a href="https://software.intel.com/en-us/download/intel-64-and-ia-32-architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4">Intel 64 and IA-32 architectures software developer's manual</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>
